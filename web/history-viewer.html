@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>历史数据查看器 - A股游资</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .header .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .controls {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .controls h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+
+    .control-group label {
+      font-weight: 500;
+      color: #555;
+    }
+
+    .control-group input,
+    .control-group select,
+    .control-group button {
+      padding: 8px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .control-group button {
+      background: #667eea;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .control-group button:hover {
+      background: #5568d3;
+    }
+
+    .control-group button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .control-group button.secondary {
+      background: #6c757d;
+    }
+
+    .control-group button.secondary:hover {
+      background: #5a6268;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .status.loading {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .data-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .data-section h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .data-section .badge {
+      background: #667eea;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      background: #f8f9fa;
+      padding: 10px;
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      border-bottom: 2px solid #dee2e6;
+      position: sticky;
+      top: 0;
+    }
+
+    .data-table td {
+      padding: 10px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .data-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .data-table .positive {
+      color: #e74c3c;
+      font-weight: 600;
+    }
+
+    .data-table .negative {
+      color: #27ae60;
+      font-weight: 600;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #dee2e6;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab:hover {
+      color: #667eea;
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .table-container {
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .empty-state {
+      color: #999;
+      padding: 40px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .date-info {
+      background: #e7f3ff;
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #0066cc;
+    }
+
+    .date-info strong {
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📈 历史数据查看器</h1>
+    <div class="subtitle">查看K线、涨停池、板块、指数等历史数据</div>
+  </div>
+
+  <div class="container">
+    <div class="controls">
+      <h2>数据查询控制</h2>
+      <div class="control-group">
+        <label>选择日期:</label>
+        <input type="date" id="queryDate" />
+        <button onclick="loadData()">查询数据</button>
+        <button class="secondary" onclick="loadLatestTradingDate()">最新交易日</button>
+        <button class="secondary" onclick="loadTradingDates()">交易日列表</button>
+      </div>
+      <div id="status" class="status hidden"></div>
+      <div id="dateInfo" class="date-info hidden"></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('kline')">个股K线</button>
+      <button class="tab" onclick="switchTab('limitup')">涨停池历史</button>
+      <button class="tab" onclick="switchTab('limitdown')">跌停池历史</button>
+      <button class="tab" onclick="switchTab('sector')">板块历史</button>
+      <button class="tab" onclick="switchTab('index')">指数历史</button>
+      <button class="tab" onclick="switchTab('auction')">竞价数据</button>
+      <button class="tab" onclick="switchTab('dates')">交易日</button>
+    </div>
+
+    <div id="kline" class="tab-content active">
+      <div class="data-section">
+        <h2>个股K线数据</h2>
+        <div class="control-group">
+          <label>股票代码:</label>
+          <input type="text" id="stockCode" placeholder="例如: 000001" />
+          <label>周期:</label>
+          <select id="klinePeriod">
+            <option value="daily">日K</option>
+            <option value="weekly">周K</option>
+            <option value="monthly">月K</option>
+          </select>
+          <label>数量:</label>
+          <input type="number" id="klineLimit" value="30" min="1" max="500" style="width: 80px;" />
+          <button onclick="loadKlineData()">查询K线</button>
+        </div>
+        <div id="klineTable" class="table-container"></div>
+      </div>
+    </div>
+
+    <div id="limitup" class="tab-content">
+      <div class="data-section">
+        <h2>涨停池历史 <span class="badge" id="limitupCount">0</span></h2>
+        <div id="limitupTable" class="table-container"></div>
+      </div>
+    </div>
+
+    <div id="limitdown" class="tab-content">
+      <div class="data-section">
+        <h2>跌停池历史 <span class="badge" id="limitdownCount">0</span></h2>
+        <div id="limitdownTable" class="table-container"></div>
+      </div>
+    </div>
+
+    <div id="sector" class="tab-content">
+      <div class="data-section">
+        <h2>板块历史 <span class="badge" id="sectorCount">0</span></h2>
+        <div id="sectorTable" class="table-container"></div>
+      </div>
+    </div>
+
+    <div id="index" class="tab-content">
+      <div class="data-section">
+        <h2>指数历史 <span class="badge" id="indexCount">0</span></h2>
+        <div id="indexTable" class="table-container"></div>
+      </div>
+    </div>
+
+    <div id="auction" class="tab-content">
+      <div class="data-section">
+        <h2>竞价数据 <span class="badge" id="auctionCount">0</span></h2>
+        <div id="auctionTable" class="table-container"></div>
+      </div>
+    </div>
+
+    <div id="dates" class="tab-content">
+      <div class="data-section">
+        <h2>交易日列表</h2>
+        <div id="datesContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentDate = null;
+    let tradingDates = [];
+
+    // 初始化
+    document.getElementById('queryDate').valueAsDate = new Date();
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = `status ${type}`;
+      status.classList.remove('hidden');
+    }
+
+    function hideStatus() {
+      document.getElementById('status').classList.add('hidden');
+    }
+
+    function showDateInfo(requestedDate, actualDate) {
+      const dateInfo = document.getElementById('dateInfo');
+      if (requestedDate !== actualDate) {
+        dateInfo.innerHTML = `<strong>注意:</strong> 请求日期 ${requestedDate} 非交易日，已自动显示最近交易日 ${actualDate} 的数据`;
+        dateInfo.classList.remove('hidden');
+      } else {
+        dateInfo.innerHTML = `<strong>交易日期:</strong> ${actualDate}`;
+        dateInfo.classList.remove('hidden');
+      }
+    }
+
+    async function loadTradingDates() {
+      showStatus('加载交易日列表...', 'loading');
+      try {
+        const response = await fetch('/api/history/trading-dates?limit=100');
+        const data = await response.json();
+        tradingDates = data.dates || [];
+
+        renderTradingDates(tradingDates);
+        switchTab('dates');
+        showStatus(`加载成功，共 ${tradingDates.length} 个交易日`, 'success');
+      } catch (error) {
+        showStatus(`加载失败: ${error.message}`, 'error');
+      }
+    }
+
+    async function loadLatestTradingDate() {
+      showStatus('获取最新交易日...', 'loading');
+      try {
+        const response = await fetch('/api/history/trading-dates?limit=1');
+        const data = await response.json();
+        if (data.dates && data.dates.length > 0) {
+          const latestDate = data.dates[0];
+          document.getElementById('queryDate').value = latestDate;
+          await loadData();
+        } else {
+          showStatus('未找到交易日数据', 'error');
+        }
+      } catch (error) {
+        showStatus(`获取失败: ${error.message}`, 'error');
+      }
+    }
+
+    async function loadData() {
+      const dateInput = document.getElementById('queryDate').value;
+      if (!dateInput) {
+        showStatus('请选择日期', 'error');
+        return;
+      }
+
+      currentDate = dateInput;
+      showStatus('加载数据...', 'loading');
+
+      try {
+        await Promise.all([
+          loadLimitUpData(dateInput),
+          loadLimitDownData(dateInput),
+          loadSectorData(dateInput),
+          loadIndexData(dateInput),
+          loadAuctionData(dateInput)
+        ]);
+
+        showDateInfo(dateInput, dateInput);
+        showStatus('数据加载成功', 'success');
+      } catch (error) {
+        showStatus(`加载失败: ${error.message}`, 'error');
+      }
+    }
+
+    async function loadKlineData() {
+      const code = document.getElementById('stockCode').value.trim();
+      if (!code) {
+        showStatus('请输入股票代码', 'error');
+        return;
+      }
+
+      const period = document.getElementById('klinePeriod').value;
+      const limit = document.getElementById('klineLimit').value;
+
+      showStatus('加载K线数据...', 'loading');
+      try {
+        const response = await fetch(`/api/history/kline?code=${code}&period=${period}&limit=${limit}`);
+        const data = await response.json();
+
+        renderKlineData(data);
+        showStatus(`加载成功，共 ${data.count || 0} 条K线数据`, 'success');
+      } catch (error) {
+        showStatus(`加载失败: ${error.message}`, 'error');
+      }
+    }
+
+    async function loadLimitUpData(date) {
+      const response = await fetch(`/api/history/limit-up?date=${date}`);
+      const data = await response.json();
+
+      // 更新日期信息
+      if (data.isFallback) {
+        showDateInfo(data.requestedDate, data.date);
+      } else {
+        showDateInfo(data.date, data.date);
+      }
+
+      renderLimitUpData(data);
+    }
+
+    async function loadLimitDownData(date) {
+      const response = await fetch(`/api/history/limit-down?date=${date}`);
+      const data = await response.json();
+      renderLimitDownData(data);
+    }
+
+    async function loadSectorData(date) {
+      const response = await fetch(`/api/history/sector?date=${date}`);
+      const data = await response.json();
+      renderSectorData(data);
+    }
+
+    async function loadIndexData(date) {
+      const response = await fetch(`/api/history/index?date=${date}`);
+      const data = await response.json();
+      renderIndexData(data);
+    }
+
+    async function loadAuctionData(date) {
+      const response = await fetch(`/api/history/auction?date=${date}`);
+      const data = await response.json();
+      renderAuctionData(data);
+    }
+
+    function renderKlineData(data) {
+      const container = document.getElementById('klineTable');
+
+      if (!data.data || data.data.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无K线数据</div>';
+        return;
+      }
+
+      let html = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>日期</th>
+              <th>开盘</th>
+              <th>收盘</th>
+              <th>最高</th>
+              <th>最低</th>
+              <th>涨跌幅</th>
+              <th>成交量</th>
+              <th>成交额</th>
+              <th>振幅</th>
+              <th>换手率</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.data.forEach(item => {
+        const changeClass = item.change_pct > 0 ? 'positive' : item.change_pct < 0 ? 'negative' : '';
+        html += `
+          <tr>
+            <td>${item.date}</td>
+            <td>${item.open?.toFixed(2) || '-'}</td>
+            <td>${item.close?.toFixed(2) || '-'}</td>
+            <td>${item.high?.toFixed(2) || '-'}</td>
+            <td>${item.low?.toFixed(2) || '-'}</td>
+            <td class="${changeClass}">${item.change_pct?.toFixed(2) || '-'}%</td>
+            <td>${item.volume || '-'}</td>
+            <td>${item.amount ? (item.amount / 10000).toFixed(0) : '-'}万</td>
+            <td>${item.amplitude?.toFixed(2) || '-'}%</td>
+            <td>${item.turnover?.toFixed(2) || '-'}%</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderLimitUpData(data) {
+      document.getElementById('limitupCount').textContent = data.count || 0;
+      const container = document.getElementById('limitupTable');
+
+      if (!data.data || data.data.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无涨停池数据</div>';
+        return;
+      }
+
+      let html = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>代码</th>
+              <th>名称</th>
+              <th>涨跌幅</th>
+              <th>最新价</th>
+              <th>连板数</th>
+              <th>首次涨停</th>
+              <th>封单额(万)</th>
+              <th>炸板次数</th>
+              <th>成交额(万)</th>
+              <th>换手率</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.data.forEach((item, index) => {
+        html += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.code}</td>
+            <td><strong>${item.name}</strong></td>
+            <td class="positive">${item.change_pct?.toFixed(2) || '-'}%</td>
+            <td>${item.latest_price?.toFixed(2) || '-'}</td>
+            <td><strong>${item.board_count || 0}</strong></td>
+            <td>${item.first_limit_time || '-'}</td>
+            <td>${item.seal_amount ? (item.seal_amount / 10000).toFixed(0) : '-'}</td>
+            <td>${item.broken_count || 0}</td>
+            <td>${item.amount ? (item.amount / 10000).toFixed(0) : '-'}</td>
+            <td>${item.turnover_pct?.toFixed(2) || '-'}%</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderLimitDownData(data) {
+      document.getElementById('limitdownCount').textContent = data.count || 0;
+      const container = document.getElementById('limitdownTable');
+
+      if (!data.data || data.data.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无跌停池数据</div>';
+        return;
+      }
+
+      let html = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>代码</th>
+              <th>名称</th>
+              <th>涨跌幅</th>
+              <th>最新价</th>
+              <th>成交额(万)</th>
+              <th>换手率</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.data.forEach((item, index) => {
+        html += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.code}</td>
+            <td><strong>${item.name}</strong></td>
+            <td class="negative">${item.change_pct?.toFixed(2) || '-'}%</td>
+            <td>${item.latest_price?.toFixed(2) || '-'}</td>
+            <td>${item.amount ? (item.amount / 10000).toFixed(0) : '-'}</td>
+            <td>${item.turnover_pct?.toFixed(2) || '-'}%</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderSectorData(data) {
+      document.getElementById('sectorCount').textContent = data.count || 0;
+      const container = document.getElementById('sectorTable');
+
+      if (!data.data || data.data.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无板块数据</div>';
+        return;
+      }
+
+      let html = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>板块代码</th>
+              <th>板块名称</th>
+              <th>涨跌幅</th>
+              <th>最新价</th>
+              <th>主力净流入(万)</th>
+              <th>龙头股</th>
+              <th>龙头涨跌幅</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.data.forEach((item, index) => {
+        const changeClass = item.change_pct > 0 ? 'positive' : item.change_pct < 0 ? 'negative' : '';
+        const leaderClass = item.leader_change_pct > 0 ? 'positive' : item.leader_change_pct < 0 ? 'negative' : '';
+        html += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.sector_code}</td>
+            <td><strong>${item.sector_name}</strong></td>
+            <td class="${changeClass}">${item.change_pct?.toFixed(2) || '-'}%</td>
+            <td>${item.latest_price?.toFixed(2) || '-'}</td>
+            <td>${item.main_net_inflow ? (item.main_net_inflow / 10000).toFixed(0) : '-'}</td>
+            <td>${item.leader_name || '-'}</td>
+            <td class="${leaderClass}">${item.leader_change_pct?.toFixed(2) || '-'}%</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderIndexData(data) {
+      document.getElementById('indexCount').textContent = data.count || 0;
+      const container = document.getElementById('indexTable');
+
+      if (!data.data || data.data.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无指数数据</div>';
+        return;
+      }
+
+      let html = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>指数代码</th>
+              <th>指数名称</th>
+              <th>最新价</th>
+              <th>涨跌幅</th>
+              <th>涨跌额</th>
+              <th>成交额(亿)</th>
+              <th>振幅</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.data.forEach(item => {
+        const changeClass = item.change_pct > 0 ? 'positive' : item.change_pct < 0 ? 'negative' : '';
+        html += `
+          <tr>
+            <td>${item.index_code}</td>
+            <td><strong>${item.index_name}</strong></td>
+            <td>${item.latest_price?.toFixed(2) || '-'}</td>
+            <td class="${changeClass}">${item.change_pct?.toFixed(2) || '-'}%</td>
+            <td class="${changeClass}">${item.change_amount?.toFixed(2) || '-'}</td>
+            <td>${item.amount ? (item.amount / 100000000).toFixed(2) : '-'}</td>
+            <td>${item.amplitude_pct?.toFixed(2) || '-'}%</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderAuctionData(data) {
+      document.getElementById('auctionCount').textContent = data.count || 0;
+      const container = document.getElementById('auctionTable');
+
+      if (!data.data || data.data.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无竞价数据</div>';
+        return;
+      }
+
+      let html = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>代码</th>
+              <th>名称</th>
+              <th>竞价涨跌幅</th>
+              <th>竞价价格</th>
+              <th>竞价量</th>
+              <th>竞价额(万)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      data.data.forEach((item, index) => {
+        const changeClass = item.auction_change_pct > 0 ? 'positive' : item.auction_change_pct < 0 ? 'negative' : '';
+        html += `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${item.code}</td>
+            <td><strong>${item.name}</strong></td>
+            <td class="${changeClass}">${item.auction_change_pct?.toFixed(2) || '-'}%</td>
+            <td>${item.auction_price?.toFixed(2) || '-'}</td>
+            <td>${item.auction_volume || '-'}</td>
+            <td>${item.auction_amount ? (item.auction_amount / 10000).toFixed(0) : '-'}</td>
+          </tr>
+        `;
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function renderTradingDates(dates) {
+      const container = document.getElementById('datesContent');
+
+      if (!dates || dates.length === 0) {
+        container.innerHTML = '<div class="empty-state">暂无交易日数据</div>';
+        return;
+      }
+
+      let html = '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 15px;">';
+
+      dates.forEach(date => {
+        html += `
+          <div style="padding: 10px; background: #f8f9fa; border-radius: 4px; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.3s;"
+               onclick="selectDate('${date}')"
+               onmouseover="this.style.borderColor='#667eea'; this.style.background='#e7f3ff';"
+               onmouseout="this.style.borderColor='transparent'; this.style.background='#f8f9fa';">
+            ${date}
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    function selectDate(date) {
+      document.getElementById('queryDate').value = date;
+      loadData();
+      switchTab('limitup');
+    }
+
+    // 页面加载时自动加载最新交易日数据
+    window.addEventListener('load', () => {
+      loadLatestTradingDate();
+    });
+  </script>
+</body>
+</html>

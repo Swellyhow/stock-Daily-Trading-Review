@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill:*)",
+      "Bash(pkill -f \"node.*src/server.js\")",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(node search-server.js)",
+      "Bash(curl -v \"http://localhost:3000/api/search?q=test\")",
+      "Bash(node -e ' *)",
+      "Read(//tmp/cls/**)",
+      "Read(//tmp/**)",
+      "Bash(curl -s http://localhost:3000/api/raw-data)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(node -e \"import\\('./web/raw-data-routes.js'\\).then\\(\\(\\) => console.log\\('OK'\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(taskkill //PID 18032 //F)",
+      "Bash(kill -9 18032)",
+      "Bash(node -e \"const data=require\\('fs'\\).readFileSync\\(0,'utf-8'\\); const arr=JSON.parse\\(data\\); console.log\\('第1条:', arr[0]\\); console.log\\('最后1条:', arr[arr.length-1]\\); console.log\\('\\\\\\\\n09:30前后:'\\); arr.filter\\(d=>d.time>='09:25:00'&&d.time<='09:35:00'\\).slice\\(0,10\\).forEach\\(d=>console.log\\(d.time, d.price, d.volume\\)\\);\")",
+      "Bash(curl -s \"http://localhost:3000/api/history/limit-down?date=2026-04-26\")",
+      "Bash(node -e \"const data=require\\('fs'\\).readFileSync\\(0,'utf-8'\\); const result=JSON.parse\\(data\\); console.log\\('跌停池第1条:', JSON.stringify\\(result.data[0], null, 2\\)\\);\")"
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+﻿node_modules/
+outputs/
+.codex/skills/.env
+.env
+data/runtime/
+
+# Local runtime state and generated files
+*.db
+*.db-wal
+*.db-shm
+*.log
+*.pid
+__pycache__/
+.pytest_cache/

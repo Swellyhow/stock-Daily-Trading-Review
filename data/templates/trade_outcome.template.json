@@ -1,0 +1,31 @@
+﻿{
+  "date": "YYYY-MM-DD",
+  "summary": {
+    "totalPnlPct": 0,
+    "realizedPnlPct": 0,
+    "maxDrawdownPct": 0,
+    "winRate": 0,
+    "tradeCount": 0,
+    "disciplineScore": 0,
+    "notes": ""
+  },
+  "trades": [
+    {
+      "symbol": "股票名",
+      "theme": "题材名",
+      "setup": "买点类型",
+      "plannedSetup": "盘前计划中的买点",
+      "plannedTheme": "盘前计划中的题材",
+      "pnlPct": 0,
+      "result": "win/loss/flat",
+      "matchedPlan": true,
+      "positionPct": 0,
+      "holdingDays": 0,
+      "entryStyle": "打板/低吸/半路/回封",
+      "exitReason": "止盈/止损/弱转强失败/尾盘兑现",
+      "entryConfidence": 0,
+      "tags": ["龙头", "回流"],
+      "notes": ""
+    }
+  ]
+}

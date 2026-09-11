@@ -1,0 +1,134 @@
+﻿{
+  "date": "2026-04-05",
+  "marketNotes": {
+    "market": {
+      "limitUpCount": 28,
+      "limitDownCount": 19,
+      "brokenBoardRate": 0.32,
+      "yesterdayStrongFeedback": 0.18,
+      "highPositionNegativeFeedback": 0.67,
+      "avgYesterdayPremiumPct": 0.9,
+      "strongPremiumRatio": 0.25,
+      "deepNegativeRatio": 0.42
+    },
+    "themes": [
+      {
+        "name": "通信设备",
+        "continuityDays": 2,
+        "limitUpCount": 5,
+        "maxBoardHeight": 3,
+        "hasLeader": true,
+        "hasMidCap": true,
+        "profitEffect": 0.55,
+        "nextDayPremiumScore": 0.48,
+        "comebackStrength": 0.52,
+        "linkageStrength": 0.6,
+        "newsCatalystStrength": 0.75
+      },
+      {
+        "name": "电网设备",
+        "continuityDays": 2,
+        "limitUpCount": 4,
+        "maxBoardHeight": 2,
+        "hasLeader": false,
+        "hasMidCap": true,
+        "profitEffect": 0.44,
+        "nextDayPremiumScore": 0.41,
+        "comebackStrength": 0.45,
+        "linkageStrength": 0.55,
+        "newsCatalystStrength": 0.75
+      }
+    ],
+    "stocks": [
+      {
+        "name": "津药药业",
+        "theme": "通信设备",
+        "boardHeight": 4,
+        "amount": 11.8,
+        "turnoverPct": 16.2,
+        "liquidityScore": 0.43,
+        "recognition": 0.91,
+        "auctionStrength": 0.71,
+        "reboundStrength": 0.77,
+        "followThrough": 0.73,
+        "volumeQuality": 0.67,
+        "isLeader": true,
+        "isMidPositionRisk": false,
+        "isCapacityCoreCandidate": false
+      },
+      {
+        "name": "通宇通讯",
+        "theme": "通信设备",
+        "boardHeight": 2,
+        "amount": 34.6,
+        "turnoverPct": 22.3,
+        "liquidityScore": 0.82,
+        "recognition": 0.74,
+        "auctionStrength": 0.52,
+        "reboundStrength": 0.49,
+        "followThrough": 0.58,
+        "volumeQuality": 0.78,
+        "isLeader": false,
+        "isMidPositionRisk": false,
+        "isCapacityCoreCandidate": true
+      },
+      {
+        "name": "远东股份",
+        "theme": "电网设备",
+        "boardHeight": 1,
+        "amount": 28.4,
+        "turnoverPct": 14.7,
+        "liquidityScore": 0.8,
+        "recognition": 0.61,
+        "auctionStrength": 0.46,
+        "reboundStrength": 0.37,
+        "followThrough": 0.45,
+        "volumeQuality": 0.64,
+        "isLeader": false,
+        "isMidPositionRisk": false,
+        "isCapacityCoreCandidate": true
+      }
+    ]
+  },
+  "holdings": [
+    {
+      "symbol": "600488",
+      "name": "津药药业",
+      "theme": "通信设备",
+      "positionPct": 20,
+      "pnlPct": 5.8,
+      "holdingDays": 2,
+      "entryStyle": "回封",
+      "plannedSetup": "龙头分歧转一致",
+      "actualSetup": "龙头分歧转一致",
+      "matchedPlan": true,
+      "notes": "主线核心仓"
+    },
+    {
+      "symbol": "002792",
+      "name": "通宇通讯",
+      "theme": "通信设备",
+      "positionPct": 15,
+      "pnlPct": 1.6,
+      "holdingDays": 1,
+      "entryStyle": "换手确认",
+      "plannedSetup": "前排换手板确认",
+      "actualSetup": "前排换手板确认",
+      "matchedPlan": true,
+      "notes": "容量中军观察仓"
+    },
+    {
+      "symbol": "600869",
+      "name": "远东股份",
+      "theme": "电网设备",
+      "positionPct": 12,
+      "pnlPct": -2.7,
+      "holdingDays": 3,
+      "entryStyle": "低吸",
+      "plannedSetup": "主线回流低吸",
+      "actualSetup": "低位补涨试错",
+      "matchedPlan": false,
+      "notes": "偏离计划的跟随单"
+    }
+  ]
+}

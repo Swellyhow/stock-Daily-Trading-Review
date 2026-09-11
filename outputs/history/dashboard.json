@@ -1,0 +1,40 @@
+﻿{
+  "readiness": {
+    "totalSamples": 3,
+    "closedSamples": 3,
+    "openSamples": 0,
+    "enoughForOptimization": false,
+    "enoughForCrossRegimeComparison": false
+  },
+  "hardStopCount": 0,
+  "environmentPerformance": [
+    {
+      "name": "进攻环境",
+      "sampleCount": 1,
+      "avgPnlPct": 2.8,
+      "avgWinRate": 0.67,
+      "avgMatchedPlanRate": 0.67
+    }
+  ],
+  "themePerformance": [
+    {
+      "name": "机器人",
+      "sampleCount": 1,
+      "avgPnlPct": 2.8,
+      "avgWinRate": 0.67,
+      "avgMatchedPlanRate": 0.67
+    }
+  ],
+  "regimePerformance": [
+    {
+      "name": "进攻环境 | 启动 | 机器人",
+      "sampleCount": 1,
+      "avgPnlPct": 2.8,
+      "avgWinRate": 0.67,
+      "avgMatchedPlanRate": 0.67
+    }
+  ],
+  "warnings": [
+    "闭环样本少于20天，当前统计更适合作为观察，不适合大幅改规则。"
+  ]
+}

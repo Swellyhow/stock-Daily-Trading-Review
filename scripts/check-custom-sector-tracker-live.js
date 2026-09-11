@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import { pathToFileURL } from 'node:url';
+import { join } from 'node:path';
+const { chromium } = await import(pathToFileURL(join(process.env.TRACKER_PLAYWRIGHT, 'index.mjs')).href);
+const base = process.env.TRACKER_BASE_URL || 'http://localhost:3000';
+const calendar = await fetch(`${base}/api/market-management/trading-dates`).then(response => response.json());
+const date = calendar.latest;
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
+try {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(`${base}/custom-sector-tracker.html`);
+  await page.locator('#addBoard').click();
+  await page.locator('#entityPicker').fill('309265.TI');
+  await page.getByRole('button', { name: '2026一季报预增 309265.TI' }).click();
+  assert.equal(await page.locator('#auto-code').inputValue(), '309265.TI');
+  await page.locator('#entityForm').getByRole('button', { name: '保存', exact: true }).click();
+  await page.locator('#addStock').click();
+  await page.locator('#entityPicker').fill('603893');
+  await page.getByRole('button', { name: '瑞芯微 603893' }).click();
+  assert.equal(await page.locator('#auto-code').inputValue(), '603893');
+  await page.locator('#entityForm').getByRole('button', { name: '保存', exact: true }).click();
+  const quote = await fetch(`${base}/api/market-management/stock-search?date=${date}&codes=603893`).then(response => response.json());
+  await page.waitForFunction(() => JSON.parse(localStorage.getItem('custom-sector-tracker:v1')).stocks.length === 1);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('custom-sector-tracker:v1')));
+  assert.equal(saved.stocks[0].date, date);
+  assert.equal(saved.stocks[0].changePct, quote.items[0].changePct);
+  assert.equal(saved.stocks[0].quoteDate, date);
+  assert.equal(saved.boards[0].quoteDate, date);
+  assert.deepEqual(errors, []);
+  console.log(JSON.stringify({ ok: true, date, board: saved.boards[0].name, stock: saved.stocks[0].name, changePct: saved.stocks[0].changePct, consoleErrors: errors.length }));
+} finally { await browser.close(); }

@@ -1,0 +1,26 @@
+﻿{
+  "date": "YYYY-MM-DD",
+  "marketNotes": {
+    "market": {
+      "limitUpCount": 0,
+      "limitDownCount": 0,
+      "brokenBoardRate": 0,
+      "yesterdayStrongFeedback": 0,
+      "highPositionNegativeFeedback": 0
+    },
+    "themes": [],
+    "stocks": []
+  },
+  "outcome": {
+    "summary": {
+      "totalPnlPct": 0,
+      "realizedPnlPct": 0,
+      "maxDrawdownPct": 0,
+      "winRate": 0,
+      "tradeCount": 0,
+      "disciplineScore": 0,
+      "notes": ""
+    },
+    "trades": []
+  }
+}

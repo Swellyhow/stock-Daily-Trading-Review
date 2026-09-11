@@ -1,0 +1,30 @@
+﻿Date: 2026-03-31
+Total PnL: 2.8%
+Realized PnL: 2.1%
+Max Drawdown: -0.9%
+Win Rate: 67%
+Trade Count: 3
+Discipline Score: 82
+Notes: Mainline trades worked well. One off-plan attempt was weak.
+
+Matched Plan Trades: 2
+Matched Plan Rate: 67%
+Unmatched Plan Trades: 1
+Positive Trades: 2
+Negative Trades: 1
+Best Trade: 机器人龙头A(2.4%)
+Worst Trade: AI核心C(-0.7%)
+
+Setup Breakdown:
+- 龙头分歧转一致: avg 2.4%, win 100%, matched 100%
+- 前排换手板确认: avg 1.1%, win 100%, matched 100%
+- 临时跟随: avg -0.7%, win 0%, matched 0%
+
+Trade Journal:
+- 机器人龙头A: 龙头分歧转一致, pnl 2.4%, pos 0%, matched Yes
+- 机器人核心B: 前排换手板确认, pnl 1.1%, pos 0%, matched Yes
+- AI核心C: 临时跟随, pnl -0.7%, pos 0%, matched No
+
+Optimization Focus:
+- Some trades were outside plan. Review execution discipline.
+- Compare this outcome with prior archived environment and theme patterns.

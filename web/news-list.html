@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A股游资新闻</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f5; }
+
+    .header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 16px 24px; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 20px; font-weight: 600; color: #333; }
+    .header-actions { display: flex; gap: 12px; }
+    .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+    .btn-primary { background: #1976d2; color: #fff; }
+    .btn-primary:hover { background: #1565c0; }
+    .btn-secondary { background: #f0f0f0; color: #333; }
+    .btn-secondary:hover { background: #e0e0e0; }
+
+    .stats-bar { background: #fff; padding: 12px 24px; margin-bottom: 16px; border-bottom: 1px solid #e0e0e0; }
+    .stats-content { max-width: 1200px; margin: 0 auto; display: flex; gap: 24px; font-size: 13px; color: #666; flex-wrap: wrap; }
+    .stat-item { display: flex; align-items: center; gap: 6px; }
+    .stat-value { font-weight: 600; color: #333; }
+
+    .search-bar { background: #fff; padding: 16px 24px; margin-bottom: 16px; border-bottom: 1px solid #e0e0e0; }
+    .search-content { max-width: 1200px; margin: 0 auto; display: flex; gap: 12px; }
+    .search-input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    .search-btn { padding: 8px 20px; background: #1976d2; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    .search-btn:hover { background: #1565c0; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px 24px; }
+
+    .news-grid { display: grid; gap: 16px; }
+
+    .news-card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: box-shadow 0.2s; cursor: pointer; }
+    .news-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    .news-title { font-size: 16px; font-weight: 600; color: #333; line-height: 1.5; margin-bottom: 12px; }
+    .news-title a { color: inherit; text-decoration: none; }
+    .news-title a:hover { color: #1976d2; }
+
+    .news-meta { display: flex; gap: 16px; font-size: 13px; color: #666; margin-bottom: 12px; flex-wrap: wrap; }
+    .news-meta-item { display: flex; align-items: center; gap: 4px; }
+
+    .news-content { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 12px; }
+
+    .news-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .news-tag { padding: 4px 10px; background: #f0f0f0; border-radius: 12px; font-size: 12px; color: #666; }
+    .news-tag.type { background: #e3f2fd; color: #1976d2; }
+
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 24px; padding: 20px; }
+    .pagination button { padding: 8px 16px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; font-size: 14px; }
+    .pagination button:hover:not(:disabled) { background: #f5f5f5; }
+    .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .pagination .page-info { font-size: 14px; color: #666; }
+
+    .loading { text-align: center; padding: 40px; color: #999; }
+    .empty { text-align: center; padding: 60px 20px; color: #999; }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.3; }
+
+    .toast { position: fixed; top: 80px; right: 24px; background: #323232; color: #fff; padding: 12px 20px; border-radius: 4px; font-size: 14px; z-index: 1000; animation: slideIn 0.3s; }
+    @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    @media (max-width: 768px) {
+      .header-content { flex-direction: column; gap: 12px; align-items: flex-start; }
+      .stats-content { flex-direction: column; gap: 8px; }
+      .search-content { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <h1>A股游资新闻</h1>
+      <div class="header-actions">
+        <button class="btn btn-primary" id="collectBtn">更新新闻</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stats-content">
+      <div class="stat-item"><span>📊 总新闻:</span><span class="stat-value" id="totalNews">-</span></div>
+      <div class="stat-item"><span>🕐 最新更新:</span><span class="stat-value" id="latestUpdate">-</span></div>
+      <div class="stat-item" id="sourcesStats"></div>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-content">
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索新闻标题或内容..." />
+      <button class="search-btn" id="searchBtn">搜索</button>
+      <button class="btn btn-secondary" id="clearBtn">清除</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="news-grid" id="newsGrid"><div class="loading">加载中...</div></div>
+    <div class="pagination" id="pagination" style="display: none;">
+      <button id="prevBtn">上一页</button>
+      <span class="page-info" id="pageInfo">-</span>
+      <button id="nextBtn">下一页</button>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 1, totalPages = 1, currentKeyword = '';
+
+    async function loadNews(page = 1, keyword = '') {
+      const newsGrid = document.getElementById('newsGrid');
+      newsGrid.innerHTML = '<div class="loading">加载中...</div>';
+
+      try {
+        const url = keyword ? `/api/news?q=${encodeURIComponent(keyword)}` : `/api/news?page=${page}&pageSize=50`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.news || data.news.length === 0) {
+          newsGrid.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>暂无新闻</p></div>';
+          document.getElementById('pagination').style.display = 'none';
+          return;
+        }
+
+        currentPage = data.page;
+        totalPages = data.totalPages;
+        currentKeyword = keyword;
+
+        renderNews(data.news);
+        updatePagination();
+        updateStats(data.stats);
+      } catch (error) {
+        newsGrid.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><p>加载失败: ${error.message}</p></div>`;
+      }
+    }
+
+    function renderNews(news) {
+      const newsGrid = document.getElementById('newsGrid');
+      let html = '';
+
+      for (const item of news) {
+        const displayDate = (item.publishedAt || item.date || '').slice(0, 16).replace('T', ' ');
+        const content = (item.content || item.trunk || '').slice(0, 200);
+
+        html += `
+          <div class="news-card" onclick="window.open('${item.jumpUrl}', '_blank')">
+            <div class="news-title"><a href="${item.jumpUrl}" target="_blank" onclick="event.stopPropagation()">${item.title}</a></div>
+            <div class="news-meta">
+              <span class="news-meta-item">📰 ${item.source}</span>
+              <span class="news-meta-item">🕐 ${displayDate}</span>
+            </div>
+            ${content ? `<div class="news-content">${content}...</div>` : ''}
+            <div class="news-tags">${item.informationTypeLabel ? `<span class="news-tag type">${item.informationTypeLabel}</span>` : ''}</div>
+          </div>
+        `;
+      }
+
+      newsGrid.innerHTML = html;
+    }
+
+    function updatePagination() {
+      const pagination = document.getElementById('pagination');
+      const pageInfo = document.getElementById('pageInfo');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (currentKeyword) {
+        pagination.style.display = 'none';
+        return;
+      }
+
+      pagination.style.display = 'flex';
+      pageInfo.textContent = `第 ${currentPage} / ${totalPages} 页`;
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+    }
+
+    function updateStats(stats) {
+      if (!stats) return;
+
+      document.getElementById('totalNews').textContent = stats.total || 0;
+      document.getElementById('latestUpdate').textContent = stats.latestUpdate ? new Date(stats.latestUpdate).toLocaleString('zh-CN') : '-';
+
+      const sourcesStats = document.getElementById('sourcesStats');
+      if (stats.sources && stats.sources.length > 0) {
+        const sourcesText = stats.sources.slice(0, 3).map(s => `${s.source_family}(${s.count})`).join(', ');
+        sourcesStats.innerHTML = `<span>📂 来源:</span><span class="stat-value">${sourcesText}</span>`;
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    document.getElementById('collectBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('collectBtn');
+      btn.disabled = true;
+      btn.textContent = '更新中...';
+
+      try {
+        const response = await fetch('/api/news/collect', { method: 'POST' });
+        const result = await response.json();
+        showToast(`已采集 ${result.collected} 条，存储 ${result.stored} 条新闻`);
+        loadNews(1);
+      } catch (error) {
+        showToast(`更新失败: ${error.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '更新新闻';
+      }
+    });
+
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      const keyword = document.getElementById('searchInput').value.trim();
+      if (keyword) loadNews(1, keyword);
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('searchInput').value = '';
+      loadNews(1);
+    });
+
+    document.getElementById('searchInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('searchBtn').click();
+    });
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentPage > 1) loadNews(currentPage - 1);
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (currentPage < totalPages) loadNews(currentPage + 1);
+    });
+
+    loadNews(1);
+  </script>
+</body>
+</html>

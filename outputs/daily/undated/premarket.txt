@@ -1,0 +1,20 @@
+Date: undated
+Environment: 冰点/恐慌
+Emotion Cycle: 冰点
+Attack Window: 防守观察
+Risk Preference: 弱
+
+Primary Theme: No clear mainline
+Secondary Theme: None
+Avoid Themes: All non-core themes
+
+Leader: Unidentified
+Core Pool: None
+Turnover Candidates: None
+Low Position Watch: None
+
+Allowed Setups: None
+Forbidden Setups: 追后排跟风, 情绪退潮中的中位接力, 追一致加速板, 临时起意打板, 非主线套利单
+Position Plan: 空仓
+Retreat Signals: 龙头竞价严重低于预期, 高位股批量负反馈, 主线不回流, 核心股炸板无法回封
+Add Signals: 龙头超预期, 板块联动加强, 前排晋级顺畅, 赚钱效应扩散

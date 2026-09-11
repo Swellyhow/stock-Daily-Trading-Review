@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>市场管理工作台</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.2.5/dist/css/tabulator.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/split.js@1.6.5/dist/split.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.2.5/dist/js/tabulator.min.js"></script>
+  <style>
+    :root { --bg:#f5f7fa; --surface:#fff; --soft:#f8fafc; --text:#101828; --muted:#667085; --line:#e4e7ec; --primary:#1677ff; --primary-soft:#eaf3ff; --up:#d92d20; --down:#138a4b; --warn:#b54708; }
+    * { box-sizing:border-box; }
+    html,body { height:100%; margin:0; min-width:320px; color:var(--text); background:var(--bg); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+    body { overflow:hidden; }
+    button,input,select { font:inherit; }
+    .topbar { height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; color:#fff; background:#162033; }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .brand-mark { display:grid; place-items:center; width:32px; height:32px; border-radius:5px; color:#fff; background:var(--primary); font-weight:800; }
+    h1 { margin:0; font-size:18px; }
+    .topnav { display:flex; gap:24px; }
+    .topnav a { color:#d0d5dd; text-decoration:none; font-size:13px; }
+    .topnav a:hover,.topnav a.active { color:#fff; }
+    .toolbar { height:52px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:0 16px; border-bottom:1px solid var(--line); background:#fff; }
+    .toolbar-left,.toolbar-right { display:flex; align-items:center; gap:9px; }
+    .toolbar-title { font-weight:700; font-size:14px; }
+    .toolbar-note { color:var(--muted); font-size:12px; }
+    .button { height:30px; padding:0 10px; border:1px solid #d0d5dd; border-radius:4px; color:#344054; background:#fff; cursor:pointer; font-size:12px; font-weight:600; }
+    .button:hover { border-color:var(--primary); color:var(--primary); }
+    .button.primary { border-color:var(--primary); color:#fff; background:var(--primary); }
+    .date-filter { display:flex; align-items:center; gap:6px; color:#475467; font-size:12px; }
+    .date-select { height:30px; min-width:126px; padding:0 26px 0 9px; border:1px solid #d0d5dd; border-radius:4px; color:#344054; background:#fff; cursor:pointer; }
+    .layout { position:relative; height:calc(100vh - 112px); min-height:420px; display:flex; flex-direction:column; }
+    .split-row { display:flex; min-height:0; min-width:0; }
+    #topRow,#bottomRow { width:100%; }
+    #topRow { min-height:270px; }
+    #bottomRow { min-height:300px; }
+    .pane { min-width:0; min-height:0; overflow:hidden; background:var(--surface); }
+    .pane-head { height:45px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 12px; border-bottom:1px solid var(--line); }
+    .pane-title { display:flex; align-items:baseline; gap:8px; min-width:0; }
+    .pane-title strong { font-size:14px; white-space:nowrap; }
+    .pane-title span { color:var(--muted); font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .pane-actions { display:flex; align-items:center; gap:7px; }
+    .field-btn { height:26px; padding:0 8px; border:1px solid var(--line); border-radius:4px; color:var(--muted); background:#fff; cursor:pointer; font-size:11px; }
+    .field-btn:hover { color:var(--primary); border-color:var(--primary); }
+    .table-holder { height:calc(100% - 45px); min-height:0; }
+    .chart-holder { position:relative; height:calc(100% - 45px); min-height:0; }
+    .chart-panel { position:relative; min-width:0; min-height:0; height:calc(100% - 45px); overflow:hidden; }
+     .period-tabs { display:flex; align-items:center; gap:2px; }
+     .period-tab { height:25px; padding:0 8px; border:1px solid transparent; border-radius:3px; color:var(--muted); background:transparent; cursor:pointer; font-size:11px; }
+     .period-tab:hover { color:var(--primary); border-color:#b2ddff; }
+     .period-tab.active { color:var(--primary); border-color:#b2ddff; background:var(--primary-soft); font-weight:700; }
+    .chart-label { position:absolute; top:7px; left:10px; z-index:2; color:#475467; font-size:11px; font-weight:700; pointer-events:none; }
+    .chart { width:100%; height:100%; }
+    /* Chart placeholders are full-panel overlays. Keep this class separate from
+       the compact empty selection badges in the pane headers. */
+    .chart-empty { position:absolute; inset:0; display:grid; place-items:center; color:var(--muted); font-size:12px; pointer-events:none; }
+    .hidden { display:none !important; }
+    .date-loading { position:absolute; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; gap:9px; color:#175cd3; background:rgba(255,255,255,.78); backdrop-filter:blur(1px); font-size:13px; font-weight:600; pointer-events:all; }
+    .date-loading::before { content:""; width:16px; height:16px; border:2px solid #b2ccff; border-top-color:var(--primary); border-radius:50%; animation:date-spin .75s linear infinite; }
+    @keyframes date-spin { to { transform:rotate(360deg); } }
+    .tabs { display:flex; align-items:center; gap:3px; padding:7px 10px 0; border-bottom:1px solid var(--line); background:#fff; }
+    .tab { position:relative; height:29px; padding:0 11px; border:0; color:var(--muted); background:transparent; cursor:pointer; font-size:12px; }
+    .tab.active { color:var(--primary); font-weight:700; }
+    .tab.active::after { content:""; position:absolute; right:8px; bottom:-1px; left:8px; height:2px; background:var(--primary); }
+    .filter-count { display:inline-flex; align-items:center; justify-content:center; min-width:17px; height:16px; margin-left:5px; padding:0 4px; border:1px solid #d0d5dd; border-radius:8px; color:#667085; background:#f8fafc; font-size:10px; font-weight:600; line-height:1; }
+    .tab.active .filter-count { border-color:#b2ccff; color:#175cd3; background:#eff4ff; }
+    .stock-tools { height:42px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:0 10px; border-bottom:1px solid var(--line); }
+    .stock-tabs { display:flex; gap:2px; }
+    .market-tabs { display:flex; gap:2px; }
+    .stock-body { height:calc(100% - 87px); min-height:0; }
+    .tabulator { height:100%; min-width:0; border:0; font-size:11px; background:#fff; }
+    .tabulator .tabulator-row, .tabulator .tabulator-cell { user-select:none; -webkit-user-select:none; }
+    .tabulator .tabulator-header { border-bottom:1px solid var(--line); background:var(--soft); }
+    .tabulator .tabulator-header .tabulator-col { height:34px; color:#475467; border-right:1px solid #eef1f5; background:var(--soft); }
+    .tabulator .tabulator-header .tabulator-col .tabulator-col-content { padding:9px 7px; }
+    .tabulator .tabulator-row { min-height:34px; border-bottom:1px solid #f0f2f5; }
+    .tabulator .tabulator-row .tabulator-cell { padding:7px; border-right:1px solid #f8fafc; }
+    .tabulator .tabulator-row:hover { background:#f5f9ff; }
+    .tabulator .tabulator-row.tabulator-selected { background:var(--primary-soft); box-shadow:inset 3px 0 0 var(--primary); }
+    .tabulator .tabulator-row.tabulator-selected .tabulator-cell { color:#0b5bd3; font-weight:600; }
+    .selection-state { display:inline-flex; align-items:center; max-width:220px; min-height:22px; padding:0 7px; border:1px solid #b2ddff; border-radius:4px; color:#0958d9; background:#eff8ff; font-size:11px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .selection-state.is-empty { border-color:var(--line); color:var(--muted); background:var(--soft); font-weight:500; }
+    .up { color:var(--up); } .down { color:var(--down); }
+    .market-badge { display:inline-flex; padding:2px 4px; border:1px solid #d0d5dd; border-radius:3px; color:#475467; background:#f8fafc; font-size:10px; }
+    .limit-type-list { display:flex; flex-wrap:wrap; gap:3px; align-items:center; }
+    .limit-type-tag { display:inline-flex; padding:2px 4px; border:1px solid #f3b4b4; border-radius:3px; color:#b42318; background:#fff5f5; font-size:10px; white-space:nowrap; }
+    .gutter { background:#e7ebf0; background-repeat:no-repeat; background-position:center; z-index:5; }
+    .gutter:hover { background-color:#b7c8df; }
+    .gutter-horizontal { width:7px; cursor:col-resize; background-image:linear-gradient(90deg,transparent 2px,#98a2b3 2px,#98a2b3 5px,transparent 5px); }
+    .gutter-vertical { height:7px; cursor:row-resize; background-image:linear-gradient(0deg,transparent 2px,#98a2b3 2px,#98a2b3 5px,transparent 5px); }
+    dialog { width:min(420px,calc(100vw - 28px)); padding:0; border:0; border-radius:6px; box-shadow:0 16px 40px rgba(16,24,40,.2); }
+    dialog::backdrop { background:rgba(16,24,40,.35); }
+    .dialog-head { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid var(--line); }
+    .dialog-head strong { font-size:15px; }
+    .dialog-body { display:grid; gap:10px; max-height:55vh; overflow:auto; padding:14px 16px; }
+    .field-option { display:flex; align-items:center; gap:8px; color:#344054; font-size:13px; }
+    .field-option input { accent-color:var(--primary); }
+    .dialog-foot { display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid var(--line); }
+    @media (max-width:900px) { .topbar { padding:0 12px; } .topnav { display:none; } .toolbar-note { display:none; } }
+     @media (max-width:700px) { body { overflow:auto; } .layout { height:auto; min-height:1400px; } #topRow,#bottomRow { min-height:660px; } .pane { min-height:220px; } .stock-tools { flex-wrap:wrap; height:68px; } .stock-body { height:calc(100% - 113px); } .tabs { overflow:auto; } .period-tabs { gap:0; } .period-tab { padding:0 6px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">管</div><h1>市场管理工作台</h1></div>
+    <nav class="topnav" aria-label="数据页面导航">
+<a href="./auction-monitor.html">竞价监控</a><a class="active" href="./market-management.html">市场管理</a><a href="./limit-up-ladder.html">连板天梯</a><a href="./custom-sector-tracker.html">板块自定义追踪</a><a href="./data-viewer.html">市场数据</a><a href="./history-viewer.html">历史数据</a><a href="./key-management.html">密钥管理</a>
+    </nav>
+  </header>
+  <div class="toolbar">
+    <div class="toolbar-left"><span class="toolbar-title">概念板块联动</span><span class="toolbar-note">stockdb 本地行情</span></div>
+    <div class="toolbar-right"><label class="date-filter" for="chartDate">交易日期<select class="date-select" id="chartDate" aria-label="交易日期"></select></label><span class="toolbar-note" id="dataStatus">正在连接 stockdb</span><button class="button" id="refreshButton" type="button">读取 stockdb</button><button class="button primary" id="updateButton" type="button">重新读取</button></div>
+  </div>
+
+  <main class="layout" id="verticalLayout">
+    <div class="date-loading hidden" id="dateLoading" role="status" aria-live="polite"></div>
+    <section class="split-row" id="topRow">
+      <article class="pane" id="sectorPane">
+        <div class="pane-head"><div class="pane-title"><strong>板块信息</strong><span id="sectorCount">概念板块</span><span class="toolbar-note" title="板块统计由 stockdb 概念成分与最近交易日日 K 计算">统计口径：stockdb</span><span id="sectorSelectedState" class="selection-state is-empty">未选择板块</span></div><div class="pane-actions"><button class="field-btn" data-table="sector" type="button">字段设置</button></div></div>
+        <div class="table-holder"><div id="sectorTable"></div></div>
+      </article>
+      <article class="pane" id="sectorKPane">
+         <div class="pane-head"><div class="pane-title"><strong id="sectorChartTitle">板块K线</strong><span id="sectorChartMeta">请选择左侧板块</span></div><div class="pane-actions"><div class="period-tabs" role="tablist" aria-label="板块K线周期"><button class="period-tab active" data-chart-type="sector" data-period="daily" type="button">日K</button><button class="period-tab" data-chart-type="sector" data-period="weekly" type="button">周K</button><button class="period-tab" data-chart-type="sector" data-period="monthly" type="button">月K</button></div></div></div>
+         <div class="chart-panel" id="sectorKChartPanel"><span class="chart-label" id="sectorKLabel">日K · 悬停查看数据，点击切换分时</span><div class="chart" id="sectorChart"></div><div class="chart-empty" id="sectorEmpty">选择概念板块查看走势</div></div>
+      </article>
+      <article class="pane" id="sectorIntradayPane">
+         <div class="pane-head"><div class="pane-title"><strong>板块分时</strong><span id="sectorIntradayMeta">请选择左侧板块</span></div></div>
+         <div class="chart-panel" id="sectorIntradayPanel"><span class="chart-label" id="sectorIntradayLabel">分时</span><div class="chart" id="sectorIntradayChart"></div><div class="chart-empty" id="sectorIntradayEmpty">选择概念板块查看分时</div></div>
+      </article>
+    </section>
+    <section class="split-row" id="bottomRow">
+      <article class="pane" id="stockPane">
+        <div class="pane-head"><div class="pane-title"><strong>个股信息</strong><span id="stockScope">请先选择板块</span><span id="stockSelectedState" class="selection-state is-empty">未选择个股</span></div><div class="pane-actions"><button class="field-btn" data-table="stock" type="button">字段设置</button></div></div>
+        <div class="stock-tools">
+          <div class="stock-tabs" role="tablist" aria-label="涨跌分类"><button class="tab active" data-tab="all" role="tab" type="button">全部<span class="filter-count" data-tab-count="all">--</span></button><button class="tab" data-tab="up" role="tab" title="按 stockdb 日 K 前收盘价和市场涨跌幅限制计算" type="button">涨停<span class="filter-count" data-tab-count="up">--</span></button><button class="tab" data-tab="down" role="tab" type="button">跌停<span class="filter-count" data-tab-count="down">--</span></button></div>
+          <div class="market-tabs" role="tablist" aria-label="上市板块"><button class="tab active" data-market="all" role="tab" type="button">全部<span class="filter-count" data-market-count="all">--</span></button><button class="tab" data-market="main" role="tab" type="button">主板<span class="filter-count" data-market-count="main">--</span></button><button class="tab" data-market="创业板" role="tab" type="button">创业板<span class="filter-count" data-market-count="创业板">--</span></button><button class="tab" data-market="科创板" role="tab" type="button">科创板<span class="filter-count" data-market-count="科创板">--</span></button><button class="tab" data-market="京A" role="tab" type="button">京A<span class="filter-count" data-market-count="京A">--</span></button></div>
+        </div>
+        <div class="stock-body"><div id="stockTable"></div></div>
+      </article>
+      <article class="pane" id="stockKPane">
+         <div class="pane-head"><div class="pane-title"><strong id="stockChartTitle">个股K线</strong><span id="stockChartMeta">请选择左下方股票</span></div><div class="pane-actions"><div class="period-tabs" role="tablist" aria-label="个股K线周期"><button class="period-tab active" data-chart-type="stock" data-period="daily" type="button">日K</button><button class="period-tab" data-chart-type="stock" data-period="weekly" type="button">周K</button><button class="period-tab" data-chart-type="stock" data-period="monthly" type="button">月K</button></div></div></div>
+         <div class="chart-panel" id="stockKChartPanel"><span class="chart-label" id="stockKLabel">日K · 悬停查看数据，点击切换分时</span><div class="chart" id="stockChart"></div><div class="chart-empty" id="stockEmpty">选择个股查看走势</div></div>
+      </article>
+      <article class="pane" id="stockIntradayPane">
+         <div class="pane-head"><div class="pane-title"><strong>个股分时</strong><span id="stockIntradayMeta">请选择左下方股票</span></div></div>
+         <div class="chart-panel" id="stockIntradayPanel"><span class="chart-label" id="stockIntradayLabel">分时</span><div class="chart" id="stockIntradayChart"></div><div class="chart-empty" id="stockIntradayEmpty">选择个股查看分时</div></div>
+      </article>
+    </section>
+  </main>
+
+  <dialog id="fieldDialog"><div class="dialog-head"><strong>字段设置</strong><button class="field-btn" id="closeDialog" type="button">关闭</button></div><div class="dialog-body" id="fieldOptions"></div><div class="dialog-foot"><button class="button" id="resetFields" type="button">恢复默认</button><button class="button primary" id="applyFields" type="button">应用</button></div></dialog>
+
+  <style>.echarts-tooltip{font-size:11px!important;line-height:14px!important}.chart-panel{overflow:visible}.pane:has(.chart-panel){overflow:visible}</style>
+  <script src="./kline-tooltip.js?v=4"></script>
+  <script src="./chart-request.js?v=1"></script>
+  <script>
+    const state = { demo: new URLSearchParams(location.search).get("demo") === "1", selectedSector: null, selectedStock: null, tab: "all", market: "all", editingTable: null, preferences: {}, chartDate: "", stockDataDate: "", tradingDates: [], chartPeriods:{sector:"daily",stock:"daily"}, dateRequestId:0 };
+    const chartRequests = ChartRequest.createLatestRequests();
+    const chartRequestId = {sector:0, stock:0};
+    const klineRequestId = {sector:0, stock:0};
+    let sectorRequestId = 0;
+    let stocksRequestId = 0;
+    let stockDetailsRequestId = 0;
+    let stockDetailsTimer = 0;
+    let stockDetailsSector = "";
+    const stockDetailsLoaded = new Set();
+    const stockDetailsPending = new Set();
+    const $ = (id) => document.getElementById(id);
+    const reviewButton = document.createElement("button"); reviewButton.className = "button"; reviewButton.id = "reviewSyncButton"; reviewButton.type = "button"; reviewButton.textContent = "补充涨停原因"; $("updateButton").before(reviewButton);
+    const fieldStore = (name) => `market-management-fields-${name}`;
+    const columnStore = (name) => `market-management-columns-${name}`;
+    const sectorFields = [
+      { title:"序号", field:"rowNumber", width:58, minWidth:48, widthGrow:0, widthShrink:0, headerSort:false, formatter:indexFormatter }, { title:"板块名称", field:"name", width:130, minWidth:90, widthGrow:2, widthShrink:1, responsive:0 }, { title:"涨幅", field:"changePct", width:68, minWidth:58, widthGrow:1, widthShrink:1, responsive:0, formatter: pctFormatter }, { title:"涨家数", field:"upCount", width:65, minWidth:55, widthGrow:1, widthShrink:1, responsive:1 }, { title:"跌家数", field:"downCount", width:65, minWidth:55, widthGrow:1, widthShrink:1, responsive:1 }, { title:"涨停数", field:"limitUpCount", width:65, minWidth:55, widthGrow:1, widthShrink:1, responsive:1 }, { title:"跌停数", field:"limitDownCount", width:65, minWidth:55, widthGrow:1, widthShrink:1, responsive:1 }, { title:"最低价时间", field:"lowPriceTime", width:90, minWidth:78, widthGrow:1, widthShrink:1, responsive:2 }, { title:"最高价时间", field:"highPriceTime", width:90, minWidth:78, widthGrow:1, widthShrink:1, responsive:2 }, { title:"起涨时间", field:"startTime", width:82, minWidth:72, widthGrow:1, widthShrink:1, responsive:2 }, { title:"起跌时间", field:"fallTime", width:82, minWidth:72, widthGrow:1, widthShrink:1, responsive:2 }, { title:"板块新闻", field:"news", width:140, minWidth:100, widthGrow:2, widthShrink:1, responsive:3 }
+    ];
+    const stockFields = [
+      { title:"序号", field:"rowNumber", width:58, minWidth:48, widthGrow:0, widthShrink:0, headerSort:false, formatter:indexFormatter }, { title:"个股名称", field:"name", width:118, minWidth:90, widthGrow:2, widthShrink:1, responsive:0 }, { title:"涨幅", field:"changePct", width:68, minWidth:58, widthGrow:1, widthShrink:1, responsive:0, formatter:pctFormatter }, { title:"现价", field:"latestPrice", width:70, minWidth:62, widthGrow:1, widthShrink:1, responsive:1, formatter:priceFormatter }, { title:"主力金额", field:"mainAmount", width:92, minWidth:80, widthGrow:1, widthShrink:1, responsive:2, formatter:amountFormatter }, { title:"换手率", field:"turnoverPct", width:70, minWidth:62, widthGrow:1, widthShrink:1, responsive:1, formatter:pctFormatter }, { title:"上市交易所", field:"marketType", width:88, minWidth:78, widthGrow:1, widthShrink:1, responsive:1, formatter:marketFormatter }, { title:"涨停类型", field:"limitTypes", width:150, minWidth:105, widthGrow:2, widthShrink:1, responsive:1, formatter:limitTypesFormatter }, { title:"涨停原因", field:"limitReason", width:150, minWidth:110, widthGrow:2, widthShrink:1, responsive:1 }, { title:"最低价时间", field:"lowPriceTime", width:90, minWidth:78, widthGrow:1, widthShrink:1, responsive:2 }, { title:"最高价时间", field:"highPriceTime", width:90, minWidth:78, widthGrow:1, widthShrink:1, responsive:2 }, { title:"起涨时间", field:"startTime", width:82, minWidth:72, widthGrow:1, widthShrink:1, responsive:2 }, { title:"起跌时间", field:"fallTime", width:82, minWidth:72, widthGrow:1, widthShrink:1, responsive:2 }, { title:"涨停时间", field:"limitUpTime", width:82, minWidth:72, widthGrow:1, widthShrink:1, responsive:2 }, { title:"跌停时间", field:"limitDownTime", width:82, minWidth:78, widthGrow:1, widthShrink:1, responsive:2 }, { title:"流通市值", field:"circulatingMarketCap", width:100, minWidth:88, widthGrow:1, widthShrink:1, responsive:2, formatter:amountFormatter }, { title:"总市值", field:"totalMarketCap", width:100, minWidth:88, widthGrow:1, widthShrink:1, responsive:2, formatter:amountFormatter }, { title:"概念板块起涨时间", field:"sectorStartTime", width:118, minWidth:100, widthGrow:1, widthShrink:1, responsive:3 }, { title:"股票新闻", field:"news", width:140, minWidth:100, widthGrow:2, widthShrink:1, responsive:3 }
+    ];
+    stockFields.splice(9, 0, { title:"详细涨停原因", field:"limitReasonDetail", width:220, minWidth:150, widthGrow:3, widthShrink:1, responsive:1, formatter:reasonDetailFormatter });
+    function pctFormatter(cell) { const n = Number(cell.getValue()); return Number.isFinite(n) ? `<span class="${n >= 0 ? "up" : "down"}">${n >= 0 ? "+" : ""}${n.toFixed(2)}%</span>` : "--"; }
+    function priceFormatter(cell) { const n = Number(cell.getValue()); return Number.isFinite(n) && n ? n.toFixed(2) : "--"; }
+    function amountFormatter(cell) { const n = Number(cell.getValue()); if (!Number.isFinite(n) || !n) return "--"; return n >= 1e8 ? `${(n/1e8).toFixed(2)}亿` : n >= 1e4 ? `${(n/1e4).toFixed(0)}万` : String(Math.round(n)); }
+    function marketFormatter(cell) { return `<span class="market-badge">${cell.getValue() || "--"}</span>`; }
+    function limitTypesFormatter(cell) { const value = cell.getValue(); const types = Array.isArray(value) ? value : (value ? String(value).split(/[·,，]/).map((label) => ({label:String(label).trim()})) : []); if (!types.length) return "--"; return `<span class="limit-type-list">${types.map((item) => `<span class="limit-type-tag" title="${String(item.evidence || "").replace(/"/g, "&quot;")}">${String(item.label || item).replace(/[<>&\"']/g, "")}</span>`).join("")}</span>`; }
+    function reasonDetailFormatter(cell) { const value = String(cell.getValue() || "").trim(); if (!value) return '<span class="toolbar-note">暂无涨停原因</span>'; const safe = value.replace(/[<>&']/g, ""); return `<span title="${safe.replace(/"/g, "&quot;")}">${safe}</span>`; }
+    function indexFormatter(cell) { const rows = cell.getTable().getRows("display"); const position = rows.indexOf(cell.getRow()); return position >= 0 ? position + 1 : "--"; }
+    function emptyLastSorter(a, b) {
+      const missing = (value) => value == null || value === "" || (typeof value === "number" && !Number.isFinite(value));
+      const aMissing = missing(a), bMissing = missing(b);
+      if (aMissing || bMissing) return aMissing === bMissing ? 0 : (aMissing ? 1 : -1);
+      const aNumber = Number(a), bNumber = Number(b);
+      if (Number.isFinite(aNumber) && Number.isFinite(bNumber)) return aNumber - bNumber;
+      return String(a).localeCompare(String(b), "zh-CN", { numeric: true, sensitivity: "base" });
+    }
+    function refreshRowNumbers(table) {
+      table?.getRows("display").forEach((row, index) => {
+        const cell = row.getCell("rowNumber");
+        const element = cell?.getElement();
+        if (element) element.textContent = String(index + 1);
+      });
+    }
+    function savedFields(name, defs) { try { const serverSaved = state.preferences[`fields-${name}`]; const localSaved = JSON.parse(localStorage.getItem(fieldStore(name)) || "null"); const saved = Array.isArray(serverSaved) ? serverSaved : localSaved; return Array.isArray(saved) ? defs.map((d) => ({...d, visible:d.field === "rowNumber" || saved.includes(d.field)})) : defs.map((d) => ({...d, visible:true})); } catch { return defs.map((d) => ({...d, visible:true})); } }
+    function columnsFor(name, defs) {
+      const visibleDefs = savedFields(name, defs);
+      const saved = state.preferences[`columns-${name}`] || (() => {
+        try { return JSON.parse(localStorage.getItem(columnStore(name)) || "null"); } catch { return null; }
+      })();
+      const normalize = ({visible, ...def}) => ({ ...def, visible, ...(def.headerSort === false ? {} : { sorter: def.sorter || emptyLastSorter }) });
+      if (!Array.isArray(saved)) return visibleDefs.map(normalize);
+      const byField = new Map(visibleDefs.map((def) => [def.field, def]));
+      const ordered = saved.map((item) => {
+        const def = byField.get(item?.field);
+        return def ? {...def, width:Number(item.width) > 20 ? Number(item.width) : undefined} : null;
+      }).filter(Boolean);
+      const seen = new Set(ordered.map((def) => def.field));
+      const all = [...ordered, ...visibleDefs.filter((def) => !seen.has(def.field))];
+      return [all.find((def) => def.field === "rowNumber"), ...all.filter((def) => def.field !== "rowNumber")].filter(Boolean).map(normalize);
+    }
+    function openFieldDialog(name) { state.editingTable = name; const defs = name === "sector" ? sectorFields : stockFields; const current = savedFields(name, defs).filter((d) => d.field !== "rowNumber"); $("fieldOptions").innerHTML = current.map((d) => `<label class="field-option"><input type="checkbox" data-field="${d.field}" ${d.visible ? "checked" : ""}>${d.title}</label>`).join(""); $("fieldDialog").showModal(); }
+    function applyFields(reset = false) { const name = state.editingTable; const defs = name === "sector" ? sectorFields : stockFields; const fields = reset ? defs.map((d) => d.field) : [...$("fieldOptions").querySelectorAll("input:checked")].map((input) => input.dataset.field); state.preferences[`fields-${name}`] = fields; localStorage.setItem(fieldStore(name), JSON.stringify(fields)); persistPreferences({ [`fields-${name}`]: fields }); (name === "sector" ? sectorTable : stockTable).setColumns(columnsFor(name, defs)); $("fieldDialog").close(); }
+    function demoSectors() { return [{code:"BK0428",name:"机器人概念",changePct:3.82,upCount:116,downCount:9,limitUpCount:7,limitDownCount:0,lowPriceTime:"09:22",highPriceTime:"10:18",startTime:"09:36",fallTime:"14:05",news:""},{code:"BK1036",name:"半导体",changePct:2.64,upCount:98,downCount:15,limitUpCount:4,limitDownCount:0,lowPriceTime:"09:42",highPriceTime:"11:06",startTime:"09:42",fallTime:"13:48",news:""},{code:"BK0737",name:"新能源车",changePct:1.47,upCount:76,downCount:31,limitUpCount:2,limitDownCount:1,lowPriceTime:"10:08",highPriceTime:"13:20",startTime:"10:08",fallTime:"14:12",news:""},{code:"BK0475",name:"人工智能",changePct:-0.86,upCount:24,downCount:121,limitUpCount:0,limitDownCount:5,lowPriceTime:"13:24",highPriceTime:"09:58",startTime:"09:58",fallTime:"13:24",news:""}]; }
+    function demoStocks() { return [{code:"300750",name:"宁德时代",changePct:4.21,latestPrice:238.42,mainAmount:182000000,turnoverPct:2.61,marketType:"创业板",lowPriceTime:"09:31",highPriceTime:"14:21",startTime:"10:06",fallTime:"13:42",limitUpTime:"",limitDownTime:"",circulatingMarketCap:700000000000,totalMarketCap:1050000000000,sectorStartTime:"10:08",news:"",limitUp:false,limitDown:false},{code:"688981",name:"中芯国际",changePct:10.03,latestPrice:74.38,mainAmount:96000000,turnoverPct:3.18,marketType:"科创板",lowPriceTime:"09:42",highPriceTime:"10:21",startTime:"10:21",fallTime:"09:42",limitUpTime:"10:21",limitDownTime:"",circulatingMarketCap:590000000000,totalMarketCap:590000000000,sectorStartTime:"09:42",news:"",limitUp:true,limitDown:false},{code:"000001",name:"平安银行",changePct:-2.16,latestPrice:11.08,mainAmount:-38000000,turnoverPct:1.32,marketType:"深A主板",lowPriceTime:"14:13",highPriceTime:"09:45",startTime:"09:45",fallTime:"14:13",limitUpTime:"",limitDownTime:"",circulatingMarketCap:210000000000,totalMarketCap:215000000000,sectorStartTime:"10:08",news:"",limitUp:false,limitDown:false},{code:"830799",name:"艾融软件",changePct:-10.22,latestPrice:28.16,mainAmount:-21000000,turnoverPct:5.88,marketType:"京A",lowPriceTime:"09:47",highPriceTime:"10:12",startTime:"10:12",fallTime:"09:47",limitUpTime:"",limitDownTime:"14:02",circulatingMarketCap:3400000000,totalMarketCap:5100000000,sectorStartTime:"09:36",news:"",limitUp:false,limitDown:true}]; }
+    async function getJson(url) { const response = await fetch(url,{cache:"no-store"}); const body = await response.json(); if (!response.ok) throw new Error(body.error || `请求失败 ${response.status}`); return body; }
+    function setDateLoading(active, date = state.chartDate) {
+      const node = $("dateLoading");
+      if (!node) return;
+      node.textContent = active ? `正在读取 ${displayDate(date)} 的市场数据` : "";
+      node.classList.toggle("hidden", !active);
+      node.setAttribute("aria-busy", active ? "true" : "false");
+    }
+    async function syncLimitReasons() {
+      const date = state.stockDataDate || state.chartDate;
+      if (!compactDate(date)) { $("dataStatus").textContent = "请先选择交易日期"; return; }
+      const button = $("reviewSyncButton");
+      button.disabled = true;
+      $("dataStatus").textContent = "正在补充涨停原因（图片识别可能需要几分钟）";
+      try {
+        const response = await fetch(`/api/market-management/limit-up-review-sync?date=${encodeURIComponent(date)}&force=1`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({date, force:true}) });
+        const body = await response.json();
+        if (!response.ok || body.ok === false) throw new Error(body.warning || body.error || "涨停原因补充失败");
+        $("dataStatus").textContent = `已补充 ${body.count || 0} 条详细涨停原因`;
+        if (state.selectedSector) await loadStocks(false);
+      } catch (error) {
+        $("dataStatus").textContent = error.message || "涨停原因补充失败";
+      } finally {
+        button.disabled = false;
+      }
+    }
+    function updateFilterCounts(statistics) {
+      document.querySelectorAll("[data-tab-count]").forEach((badge) => { const value = Number(statistics?.tabs?.[badge.dataset.tabCount]); badge.textContent = Number.isFinite(value) ? value.toLocaleString("zh-CN") : "--"; });
+      document.querySelectorAll("[data-market-count]").forEach((badge) => { const value = Number(statistics?.markets?.[badge.dataset.marketCount]); badge.textContent = Number.isFinite(value) ? value.toLocaleString("zh-CN") : "--"; });
+    }
+    async function loadSectors(force = false, requestToken = state.dateRequestId) {
+      const requestId = ++sectorRequestId;
+      const requestedDate = state.chartDate;
+      try {
+        const body = state.demo ? {items:demoSectors(),source:"演示数据",date:requestedDate} : await getJson(`/api/market-management/sectors?date=${encodeURIComponent(requestedDate)}&limit=5000${force ? "&force=1" : ""}`);
+        if (requestId !== sectorRequestId || requestToken !== state.dateRequestId || requestedDate !== state.chartDate) return;
+        await sectorTable.setData(body.items || []);
+        sectorTable.redraw(true);
+        $("sectorCount").textContent = `${(body.items || []).length} 个概念板块`;
+        const dataDate = String(body.date || "").replace(/^(\d{4})(\d{2})(\d{2})$/, "$1-$2-$3");
+        const stateText = `${body.source || "stockdb"}${dataDate ? ` · 数据日期 ${dataDate}` : ""}`;
+        $("dataStatus").textContent = body.warnings?.length ? body.warnings[0] : stateText;
+        const first = (body.items || [])[0];
+        if (first) await selectSector(first, force, requestToken);
+      } catch (error) {
+        if (requestId !== sectorRequestId || requestToken !== state.dateRequestId) return;
+        $("dataStatus").textContent = error.message;
+        sectorTable.clearData();
+      }
+    }
+    async function loadStocks(force = false, requestToken = state.dateRequestId) {
+      if (!state.selectedSector) return;
+      const requestId = ++stocksRequestId;
+      const sectorCode = state.selectedSector.code;
+      const sectorName = state.selectedSector.name;
+      const requestedDate = state.chartDate;
+      stockDetailsRequestId += 1;
+      stockDetailsSector = sectorCode;
+      stockDetailsLoaded.clear();
+      stockDetailsPending.clear();
+      clearTimeout(stockDetailsTimer);
+      stockTable.clearData();
+      updateFilterCounts(null);
+      $("stockScope").textContent = `${sectorName} · 正在读取 stockdb 成分股`;
+      try {
+        const body = state.demo ? {items:demoStocks(),date:requestedDate} : await getJson(`/api/market-management/stocks?sector=${encodeURIComponent(sectorCode)}&date=${encodeURIComponent(requestedDate)}&tab=${state.tab}&market=${encodeURIComponent(state.market)}${force ? "&force=1" : ""}`);
+        if (requestId !== stocksRequestId || requestToken !== state.dateRequestId || requestedDate !== state.chartDate || sectorCode !== state.selectedSector?.code) return;
+        state.stockDataDate = compactDate(body.date) || state.chartDate;
+        const filtered = state.demo ? body.items.filter((s) => (state.tab === "all" || (state.tab === "up" && s.limitUp) || (state.tab === "down" && s.limitDown)) && (state.market === "all" || (state.market === "main" && ["深A主板","沪A主板"].includes(s.marketType)) || s.marketType === state.market)) : body.items;
+        updateFilterCounts(body.statistics);
+        await stockTable.setData(filtered.map((item) => ({...item, minuteFieldsLoaded:Boolean(state.demo)})));
+        stockTable.deselectRow();
+        if (!filtered.some((item) => item.code === state.selectedStock?.code)) {
+          state.selectedStock = null;
+          setSelectionState("stockSelectedState", "未选择个股", true);
+          $("stockChartTitle").textContent = "个股K线";
+          $("stockChartMeta").textContent = "请选择左下方股票";
+          $("stockIntradayMeta").textContent = "请选择左下方股票";
+        }
+        stockTable.redraw(true);
+        const fetchedAt = body.fetchedAt || body.updatedAt;
+        const freshness = fetchedAt ? ` · ${new Date(fetchedAt).toLocaleString("zh-CN")}` : "";
+        const source = body.dataSource || body.source || "数据源未知";
+        const quality = body.warnings?.[0] || body.dataQuality || "已校验";
+        $("stockScope").textContent = `${state.selectedSector.name} · ${filtered.length} 只 · ${source} · ${quality}${freshness}`;
+        scheduleVisibleStockDetails();
+      } catch (error) {
+        if (requestId !== stocksRequestId || requestToken !== state.dateRequestId || requestedDate !== state.chartDate) return;
+        $("stockScope").textContent = error.message;
+        stockTable.clearData();
+        setSelectionState("stockSelectedState", "未选择个股", true);
+      }
+    }
+    function scheduleVisibleStockDetails() {
+      if (state.demo || !state.selectedSector || stockDetailsSector !== state.selectedSector.code) return;
+      clearTimeout(stockDetailsTimer);
+      stockDetailsTimer = setTimeout(loadVisibleStockDetails, 100);
+    }
+    async function loadVisibleStockDetails() {
+      const sectorCode = state.selectedSector?.code;
+      if (!sectorCode || sectorCode !== stockDetailsSector) return;
+      const requestId = stockDetailsRequestId;
+      const requestedDate = state.stockDataDate || state.chartDate;
+      const rows = stockTable.getRows("visible");
+      const codes = rows.map((row) => row.getData()?.code).filter((code) => /^\d{6}$/.test(code) && !stockDetailsLoaded.has(code) && !stockDetailsPending.has(code)).slice(0, 30);
+      if (!codes.length) return;
+      codes.forEach((code) => stockDetailsPending.add(code));
+      try {
+        const body = await getJson(`/api/market-management/stock-details?sector=${encodeURIComponent(sectorCode)}&date=${encodeURIComponent(requestedDate)}&codes=${codes.join(",")}`);
+        if (requestId !== stockDetailsRequestId || requestedDate !== (state.stockDataDate || state.chartDate) || sectorCode !== state.selectedSector?.code) return;
+        await stockTable.updateData((body.items || []).map((item) => ({...item, minuteFieldsLoaded:true})));
+        (body.items || []).forEach((item) => stockDetailsLoaded.add(item.code));
+        const selectedUpdate = (body.items || []).find((item) => item.code === state.selectedStock?.code);
+        if (selectedUpdate) {
+          state.selectedStock = {...state.selectedStock, ...selectedUpdate, minuteFieldsLoaded:true};
+          stockTable.selectRow(selectedUpdate.code);
+        }
+      } catch { /* 日K列表仍可正常使用，分钟字段保持为空 */ }
+      finally {
+        codes.forEach((code) => stockDetailsPending.delete(code));
+      }
+    }
+    async function refreshSectorRealtime(row, force = false, requestToken = state.dateRequestId) { if (!/^\d{6}\.TI$/i.test(row.code) || state.demo || state.chartDate !== shanghaiTodayKey()) return; try { const body = await getJson(`/api/market-management/sector-realtime?code=${encodeURIComponent(row.code)}${force ? "&force=1" : ""}`); if (requestToken !== state.dateRequestId || state.chartDate !== shanghaiTodayKey() || state.selectedSector?.code !== row.code) return; if (body.item) { state.selectedSector = {...row, ...body.item, name:row.name}; await sectorTable.updateData([state.selectedSector]); $("sectorChartMeta").textContent = `${state.selectedSector.changePct >= 0 ? "+" : ""}${Number(state.selectedSector.changePct || 0).toFixed(2)}% · stockdb`;} } catch { /* 目录数据仍可用 */ } }
+    function compactDate(value) { const text = String(value || "").replace(/-/g, ""); return /^\d{8}$/.test(text) ? text : ""; }
+    function displayDate(value) { const date = compactDate(value); return date ? `${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}` : "--"; }
+    function setSelectionState(id, text, empty = false) { const node = $(id); if (!node) return; node.textContent = text; node.classList.toggle("is-empty", empty); }
+    async function selectSector(row, force = false, requestToken = state.dateRequestId) {
+      if (!row?.code || requestToken !== state.dateRequestId) return;
+      state.selectedSector = row;
+      state.stockDataDate = state.chartDate;
+      sectorTable?.deselectRow(); sectorTable?.selectRow(row.code);
+      setSelectionState("sectorSelectedState", `已选板块：${row.name}`);
+      setSelectionState("stockSelectedState", "未选择个股", true);
+      state.selectedStock = null;
+      chartRequests.cancel("stock-kline"); chartRequests.cancel("stock-intraday");
+      stockChart.clear(); stockIntradayChart.clear();
+      $("stockEmpty").classList.remove("hidden"); $("stockIntradayEmpty").classList.remove("hidden");
+      $("stockChartTitle").textContent = "个股K线"; $("stockChartMeta").textContent = "请选择左下方股票"; $("stockIntradayMeta").textContent = "请选择左下方股票";
+      $("sectorChartTitle").textContent = `${row.name} K线`;
+      $("sectorChartMeta").textContent = `${row.changePct >= 0 ? "+" : ""}${Number(row.changePct || 0).toFixed(2)}% · ${displayDate(state.chartDate)}`;
+      $("sectorIntradayMeta").textContent = `${row.name} · ${displayDate(state.chartDate)}`;
+      loadChart("sector", row.code, force, state.chartDate, requestToken);
+      loadIntraday("sector", row.code, state.chartDate, force, requestToken);
+      refreshSectorRealtime(row, force, requestToken);
+      await loadStocks(force, requestToken);
+    }
+    function selectStock(row) {
+      if (!row?.code) return;
+      const changed = state.selectedStock?.code !== row.code;
+      state.selectedStock = row;
+      stockTable?.deselectRow();
+      stockTable?.selectRow(row.code);
+      setSelectionState("stockSelectedState", `已选个股：${row.name}`);
+      $("stockChartTitle").textContent = `${row.name} K线`;
+      $("stockChartMeta").textContent = changed ? "正在读取 stockdb K线" : `${row.marketType || "A股"}`;
+      $("stockIntradayMeta").textContent = changed ? "正在读取 stockdb 分时" : `${row.name} · ${row.marketType || "A股"}`;
+      if (!changed) return;
+      stockChart.clear();
+      stockIntradayChart.clear();
+      $("stockEmpty").textContent = `${row.name} K线加载中`;
+      $("stockEmpty").classList.remove("hidden");
+      $("stockIntradayEmpty").textContent = `${row.name} 分时加载中`;
+      $("stockIntradayEmpty").classList.remove("hidden");
+      loadChart("stock", row.code, false, state.chartDate, state.dateRequestId);
+      loadIntraday("stock", row.code, state.chartDate, false, state.dateRequestId);
+    }
+    function setChartDate(value, reload = true) {
+      const date = compactDate(value);
+      if (!date) return;
+      const changed = date !== state.chartDate;
+      state.chartDate = date;
+      state.stockDataDate = date;
+      if (![...$("chartDate").options].some((option) => option.value === date)) $("chartDate").add(new Option(displayDate(date), date), 0);
+      $("chartDate").value = date;
+      persistPreferences({"chart-date":date});
+      if (!reload || !changed) return;
+      const requestToken = ++state.dateRequestId;
+      chartRequests.cancelAll();
+      sectorRequestId += 1; stocksRequestId += 1; stockDetailsRequestId += 1;
+      chartRequestId.sector += 1; chartRequestId.stock += 1; klineRequestId.sector += 1; klineRequestId.stock += 1;
+      state.selectedSector = null; state.selectedStock = null;
+      sectorTable?.clearData(); stockTable?.clearData();
+      sectorChart.clear(); stockChart.clear(); sectorIntradayChart.clear(); stockIntradayChart.clear();
+      $("sectorEmpty").classList.remove("hidden"); $("stockEmpty").classList.remove("hidden"); $("sectorIntradayEmpty").classList.remove("hidden"); $("stockIntradayEmpty").classList.remove("hidden");
+      $("dataStatus").textContent = `正在读取 ${displayDate(date)} 的 stockdb 数据`;
+      setDateLoading(true, date);
+      loadSectors(false, requestToken).finally(() => { if (requestToken === state.dateRequestId) setDateLoading(false, date); });
+    }
+    function legacyRenderChart(type, chart, items, title, period = "daily") {
+      const data = (items || []).map((item) => [item.date, item.open, item.close, item.low, item.high, Number(item.volume || 0), Number(item.amount || 0), Number(item.changePct || 0), Number(item.turnoverPct || 0), Number(item.amplitudePct ?? item.amplitude ?? 0)]);
+      const dates = data.map((item) => item[0]);
+      const candles = data.map((item) => item.slice(1,5));
+      const volumes = data.map((item) => ({value:item[5],itemStyle:{color:item[2]>=item[1]?"#d92d20":"#138a4b"}}));
+      chart.off("click");
+      chart.setOption({animation:false,grid:[{left:52,right:16,top:34,height:"60%"},{left:52,right:16,bottom:28,height:"18%"}],tooltip:{trigger:"axis",confine:false,position:(point,_params,_dom,_rect,size)=>[Math.max(4,Math.min(point[0]-size.contentSize[0]/2,size.viewSize[0]-size.contentSize[0]-4)),6],axisPointer:{type:"cross"},formatter:(params) => { const index = params?.[0]?.dataIndex ?? 0; const item = items[index] || {}; const change = Number(item.changePct); const amplitude = Number(item.amplitudePct ?? item.amplitude); const rows = [`<strong>${String(item.date || "--")}</strong>`]; rows.push(`开盘：${Number(item.open || 0).toFixed(2)}`); rows.push(`最高：${Number(item.high || 0).toFixed(2)}`); rows.push(`最低：${Number(item.low || 0).toFixed(2)}`); rows.push(`收盘：${Number(item.close || 0).toFixed(2)}`); if (Number.isFinite(change)) rows.push(`涨跌幅：${change >= 0 ? "+" : ""}${change.toFixed(2)}%`); if (Number.isFinite(amplitude) && amplitude) rows.push(`振幅：${amplitude.toFixed(2)}%`); rows.push(`成交量：${Number(item.volume || 0).toLocaleString("zh-CN")}`); rows.push(`成交额：${Number(item.amount || 0).toLocaleString("zh-CN")}`); if (Number(item.turnoverPct)) rows.push(`换手率：${Number(item.turnoverPct).toFixed(2)}%`); return rows.join("<br>");}},axisPointer:{link:[{xAxisIndex:"all"}]},dataZoom:[{type:"inside",xAxisIndex:[0,1],start:0,end:100},{type:"slider",xAxisIndex:[0,1],height:18,bottom:2,start:0,end:100}],xAxis:[{type:"category",data:dates,axisLabel:{hideOverlap:true}},{type:"category",gridIndex:1,data:dates,axisLabel:{show:false}}],yAxis:[{scale:true,splitLine:{lineStyle:{color:"#eef1f5"}}},{gridIndex:1,splitLine:{show:false},axisLabel:{show:false}}],series:[{name:title,type:"candlestick",data:candles,itemStyle:{color:"#d92d20",color0:"#138a4b",borderColor:"#d92d20",borderColor0:"#138a4b"}},{name:"成交量",type:"bar",xAxisIndex:1,yAxisIndex:1,data:volumes,barMaxWidth:8}]}, true);
+      chart.on("click", (params) => { if (period === "daily" && params.seriesType === "candlestick") setChartDate(items[params.dataIndex]?.date, true); });
+      chart.resize();
+    }
+    function renderChart(type, chart, items, title, period = "daily") {
+      const data = (items || []).map((item) => [item.date, item.open, item.close, item.low, item.high, Number(item.volume || 0), Number(item.amount || 0)]);
+      const dates = data.map((item) => item[0]);
+      const candles = data.map((item) => item.slice(1, 5));
+      const volumes = data.map((item) => ({ value: item[5], itemStyle: { color: item[2] >= item[1] ? "#d92d20" : "#138a4b" } }));
+      chart.off("click");
+      chart.setOption({ animation: false, grid: [{ left: 52, right: 16, top: 34, height: "60%" }, { left: 52, right: 16, bottom: 28, height: "18%" }], tooltip: { trigger: "axis", confine: false, position: (point, _params, _dom, _rect, size) => [Math.max(4, Math.min(point[0] - size.contentSize[0] / 2, size.viewSize[0] - size.contentSize[0] - 4)), 6], axisPointer: { type: "cross" }, formatter: (params) => KlineTooltip.format(items, params?.[0]?.dataIndex ?? 0) }, axisPointer: { link: [{ xAxisIndex: "all" }] }, dataZoom: [{ type: "inside", xAxisIndex: [0, 1], start: 0, end: 100 }, { type: "slider", xAxisIndex: [0, 1], height: 18, bottom: 2, start: 0, end: 100 }], xAxis: [{ type: "category", data: dates, axisLabel: { hideOverlap: true } }, { type: "category", gridIndex: 1, data: dates, axisLabel: { show: false } }], yAxis: [{ scale: true, splitLine: { lineStyle: { color: "#eef1f5" } } }, { gridIndex: 1, splitLine: { show: false }, axisLabel: { show: false } }], series: [{ name: title, type: "candlestick", data: candles, itemStyle: { color: "#d92d20", color0: "#138a4b", borderColor: "#d92d20", borderColor0: "#138a4b" } }, { name: "成交量", type: "bar", xAxisIndex: 1, yAxisIndex: 1, data: volumes, barMaxWidth: 8 }] }, true);
+      chart.on("click", (params) => { if (period === "daily" && params.seriesType === "candlestick") setChartDate(items[params.dataIndex]?.date, true); });
+      chart.resize();
+    }
+    function renderIntradayChart(chart, payload, title) {
+      const items = payload.items || [];
+      const times = items.map((item) => String(item.time).replace(/^(\d{2})(\d{2})$/, "$1:$2"));
+      const prices = items.map((item) => Number(item.price || 0));
+      const volumes = items.map((item, index) => ({value:Number(item.volume || 0),itemStyle:{color:index === 0 || prices[index] >= prices[index - 1] ? "#d92d20" : "#138a4b"}}));
+      const hasAverage = items.some((item) => Number.isFinite(Number(item.average)) && Number(item.average) > 0);
+      const series = [{name:title,type:"line",data:prices,showSymbol:false,lineStyle:{width:1.4,color:"#1677ff"},areaStyle:{color:"rgba(22,119,255,.08)"}}];
+      if (hasAverage) series.push({name:"均价",type:"line",data:items.map((item) => Number(item.average || 0)),showSymbol:false,lineStyle:{width:1,color:"#d99a20"}});
+      series.push({name:"成交量",type:"bar",xAxisIndex:1,yAxisIndex:1,data:volumes,barMaxWidth:5});
+      chart.setOption({animation:false,grid:[{left:48,right:12,top:34,height:"61%"},{left:48,right:12,bottom:24,height:"18%"}],tooltip:{trigger:"axis",valueFormatter:(value)=>Number(value).toLocaleString("zh-CN")},axisPointer:{link:[{xAxisIndex:"all"}]},xAxis:[{type:"category",boundaryGap:false,data:times,axisLabel:{hideOverlap:true}},{type:"category",gridIndex:1,data:times,axisLabel:{show:false}}],yAxis:[{scale:true,splitLine:{lineStyle:{color:"#eef1f5"}}},{gridIndex:1,splitLine:{show:false},axisLabel:{show:false}}],series}, true);
+      chart.resize();
+    }
+    function currentChartSelection(type, code, date, token) {
+      return token === state.dateRequestId && date === state.chartDate && code === (type === "sector" ? state.selectedSector?.code : state.selectedStock?.code);
+    }
+    async function loadChart(type, code, force = false, requestedDate = state.chartDate, requestToken = state.dateRequestId) {
+      const chart = type === "sector" ? sectorChart : stockChart;
+      const empty = $(type === "sector" ? "sectorEmpty" : "stockEmpty");
+      const meta = $(type + "ChartMeta"), label = $(type + "KLabel");
+      const period = state.chartPeriods[type] || "daily";
+      const periodLabel = period === "weekly" ? "周K" : period === "monthly" ? "月K" : "日K";
+      const isCurrent = () => currentChartSelection(type, code, requestedDate, requestToken) && state.chartPeriods[type] === period;
+      if (!isCurrent()) return;
+      const query = new URLSearchParams({code, date:requestedDate, period, limit:"1000"});
+      if (force) query.set("force", "1");
+      return chartRequests.run(type + "-kline", `/api/market-management/${type}-kline?${query}`, {
+        isCurrent,
+        loading({refresh}){if(refresh)return; chart.clear(); empty.textContent = "K线加载中"; empty.classList.remove("hidden"); meta.textContent = `${displayDate(requestedDate)} · 读取中`; label.textContent = periodLabel; },
+        success(body) {
+          if (!body.items?.length) throw Error(body.error || `${displayDate(requestedDate)} 暂无 K 线数据`);
+          if (body.items.some(row => compactDate(row.date) > requestedDate)) throw Error("K线日期与当前选择不一致");
+          renderChart(type, chart, body.items, type === "sector" ? "板块K线" : "个股K线", period);
+          empty.classList.add("hidden");
+          meta.textContent = `${body.source || "本地"} · ${body.items.length}根 · 截至 ${displayDate(body.items.at(-1).date)}`;
+        },
+        error(error) { chart.clear(); empty.textContent = error.message; empty.classList.remove("hidden"); meta.textContent = `${displayDate(requestedDate)} · 未获取数据`; }
+      });
+    }
+    async function loadIntraday(type, code, date, force = false, requestToken = state.dateRequestId) {
+      if (!code || !compactDate(date)) return;
+      const chart = type === "sector" ? sectorIntradayChart : stockIntradayChart;
+      const empty = $(type + "IntradayEmpty"), label = $(type + "IntradayLabel"), meta = $(type + "IntradayMeta");
+      const query = new URLSearchParams({code, date, kind:type});
+      if (force) query.set("force", "1");
+      return chartRequests.run(type + "-intraday", `/api/market-management/intraday?${query}`, {
+        isCurrent: () => currentChartSelection(type, code, date, requestToken),
+        loading({refresh}){if(refresh)return; chart.clear(); empty.textContent = "分时加载中"; empty.classList.remove("hidden"); label.textContent = `分时 · ${displayDate(date)}`; meta.textContent = `${displayDate(date)} · 读取中`; },
+        success(body) {
+          if (!body.items?.length) throw Error(body.error || `${displayDate(date)} 暂无分时数据`);
+          if (body.date && compactDate(body.date) !== date) throw Error("分时日期与当前选择不一致");
+          renderIntradayChart(chart, body, type === "sector" ? "板块价格" : "股价");
+          empty.classList.add("hidden");
+          meta.textContent = `${displayDate(body.date || date)} · ${body.source || "本地"}`;
+          label.textContent = `分时 · ${displayDate(date)}`;
+        },
+        error(error) { chart.clear(); empty.textContent = error.message; empty.classList.remove("hidden"); meta.textContent = `${displayDate(date)} · 未获取数据`; }
+      });
+    }
+    async function loadTradingDates() {
+      try {
+        const body = state.demo ? {dates:[new Date().toISOString().slice(0,10).replace(/-/g,"")],latest:new Date().toISOString().slice(0,10).replace(/-/g,"")} : await getJson("/api/market-management/trading-dates");
+        state.tradingDates = [...new Set(body.dates || [])].sort((a, b) => b.localeCompare(a));
+        $("chartDate").innerHTML = state.tradingDates.map((date) => `<option value="${date}">${displayDate(date)}</option>`).join("");
+        const savedDate = compactDate(state.preferences["chart-date"]);
+        setChartDate(state.tradingDates.includes(savedDate) ? savedDate : (body.latest || state.tradingDates[0]), false);
+      } catch { state.tradingDates = []; state.chartDate = ""; $("chartDate").innerHTML = ""; }
+    }
+    const sectorChart = echarts.init($("sectorChart")); const stockChart = echarts.init($("stockChart"));
+    const sectorIntradayChart = echarts.init($("sectorIntradayChart")); const stockIntradayChart = echarts.init($("stockIntradayChart"));
+    let sectorTable; let stockTable; let verticalSplit; let topSplit; let bottomSplit; const columnSaveTimers = {};
+    function validSizes(value, fallback) { return Array.isArray(value) && value.length === fallback.length && value.every((item) => Number.isFinite(Number(item)) && Number(item) > 0) ? value.map(Number) : fallback; }
+    function persistPreferences(patch) { state.preferences = {...state.preferences, ...patch}; fetch("/api/market-management/preferences", { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({preferences:patch}) }).catch(() => {}); }
+    async function loadPreferences() { try { const body = await getJson("/api/market-management/preferences"); state.preferences = body.preferences && typeof body.preferences === "object" ? body.preferences : {}; } catch { state.preferences = {}; } }
+    function migrateTimeFields() {
+      if (Number(state.preferences["time-fields-version"] || 0) >= 4) return;
+      const patch = {"time-fields-version":4};
+      for (const [name, defs] of [["sector", sectorFields], ["stock", stockFields]]) {
+        const key = `fields-${name}`;
+        const saved = Array.isArray(state.preferences[key]) ? state.preferences[key] : (() => { try { return JSON.parse(localStorage.getItem(fieldStore(name)) || "null"); } catch { return null; } })();
+        const enabled = new Set(Array.isArray(saved) ? saved : defs.map((def) => def.field));
+        enabled.delete("lowTime");
+        ["lowPriceTime", "highPriceTime", "startTime", "fallTime"].forEach((field) => enabled.add(field));
+        const fields = defs.map((def) => def.field).filter((field) => enabled.has(field));
+        if (name === "stock" && !fields.includes("limitTypes")) fields.push("limitTypes");
+        if (name === "stock" && !fields.includes("limitReasonDetail")) fields.push("limitReasonDetail");
+        patch[key] = fields;
+        state.preferences[key] = fields;
+        localStorage.setItem(fieldStore(name), JSON.stringify(fields));
+        localStorage.removeItem(columnStore(name));
+        delete state.preferences[`columns-${name}`];
+      }
+      persistPreferences(patch);
+    }
+    function restoreChartPeriods() {
+      for (const type of ["sector", "stock"]) {
+        const period = state.preferences[`chart-period-${type}`];
+        if (["daily", "weekly", "monthly"].includes(period)) {
+          state.chartPeriods[type] = period;
+          document.querySelectorAll(`[data-chart-type="${type}"]`).forEach((button) => button.classList.toggle("active", button.dataset.period === period));
+        }
+      }
+    }
+    function migrateChartLayout() {
+      if (Number(state.preferences["chart-layout-version"] || 0) >= 2) return;
+      const layout = {...(state.preferences.layout || {})};
+      delete layout.sectorChart;
+      delete layout.stockChart;
+      if (!Array.isArray(layout.top) || layout.top.length !== 3) layout.top = [34,33,33];
+      if (!Array.isArray(layout.bottom) || layout.bottom.length !== 3) layout.bottom = [34,33,33];
+      state.preferences.layout = layout;
+      persistPreferences({"chart-layout-version":2, layout});
+    }
+    function scheduleColumnSave(name, table) { clearTimeout(columnSaveTimers[name]); columnSaveTimers[name] = setTimeout(() => { const columns = table.getColumns().map((column) => ({field:column.getField(), width:column.getWidth()})); state.preferences[`columns-${name}`] = columns; localStorage.setItem(columnStore(name), JSON.stringify(columns)); persistPreferences({ [`columns-${name}`]: columns }); }, 120); }
+    function redrawTables() { requestAnimationFrame(() => { sectorTable?.redraw(true); stockTable?.redraw(true); sectorChart.resize(); stockChart.resize(); sectorIntradayChart.resize(); stockIntradayChart.resize(); }); }
+    function initLayout() { const layout = state.preferences.layout || {}; verticalSplit = Split(["#topRow","#bottomRow"],{direction:"vertical",sizes:validSizes(layout.vertical,[45,55]),minSize:[240,280],gutterSize:7,onDragEnd:(sizes)=>{ persistPreferences({layout:{...state.preferences.layout,vertical:sizes}}); redrawTables(); }}); topSplit = Split(["#sectorPane","#sectorKPane","#sectorIntradayPane"],{direction:"horizontal",sizes:validSizes(layout.top,[34,33,33]),minSize:[300,360,300],gutterSize:7,onDragEnd:(sizes)=>{ persistPreferences({layout:{...state.preferences.layout,top:sizes}}); redrawTables(); }}); bottomSplit = Split(["#stockPane","#stockKPane","#stockIntradayPane"],{direction:"horizontal",sizes:validSizes(layout.bottom,[34,33,33]),minSize:[360,360,300],gutterSize:7,onDragEnd:(sizes)=>{ persistPreferences({layout:{...state.preferences.layout,bottom:sizes}}); redrawTables(); }}); requestAnimationFrame(() => { sectorChart.resize(); stockChart.resize(); sectorIntradayChart.resize(); stockIntradayChart.resize(); }); }
+    document.querySelectorAll("[data-table]").forEach((button)=>button.addEventListener("click",()=>openFieldDialog(button.dataset.table)));
+    $("closeDialog").addEventListener("click",()=>$("fieldDialog").close()); $("applyFields").addEventListener("click",()=>applyFields(false)); $("resetFields").addEventListener("click",()=>applyFields(true)); $("refreshButton").addEventListener("click",()=>loadSectors(false)); $("updateButton").addEventListener("click",()=>loadSectors(true)); $("chartDate").addEventListener("change",(event)=>setChartDate(event.target.value, true));
+    $("reviewSyncButton")?.addEventListener("click",syncLimitReasons);
+    document.querySelectorAll("[data-tab]").forEach((button)=>button.addEventListener("click",()=>{document.querySelectorAll("[data-tab]").forEach((b)=>b.classList.toggle("active",b===button));state.tab=button.dataset.tab;loadStocks();}));
+    document.querySelectorAll("[data-market]").forEach((button)=>button.addEventListener("click",()=>{document.querySelectorAll("[data-market]").forEach((b)=>b.classList.toggle("active",b===button));state.market=button.dataset.market;loadStocks();}));
+    document.querySelectorAll("[data-chart-type][data-period]").forEach((button) => button.addEventListener("click", () => { const type = button.dataset.chartType; const period = button.dataset.period; state.chartPeriods[type] = period; document.querySelectorAll(`[data-chart-type="${type}"]`).forEach((item) => item.classList.toggle("active", item === button)); persistPreferences({[`chart-period-${type}`]:period}); const selected = type === "sector" ? state.selectedSector : state.selectedStock; if (selected) loadChart(type, selected.code, false); }));
+    let realtimeRefreshBusy = false;
+    function marketLiveNow() { const d = new Date(), day = d.getDay(), minutes = d.getHours() * 60 + d.getMinutes(); return day > 0 && day < 6 && minutes >= 555 && minutes <= 900; }
+    function shanghaiTodayKey() { return new Intl.DateTimeFormat("en-CA", {timeZone:"Asia/Shanghai", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date()).replace(/-/g, ""); }
+    async function refreshRealtimeCharts() {
+      if (realtimeRefreshBusy || state.chartDate !== shanghaiTodayKey()) return;
+      realtimeRefreshBusy = true;
+      try {
+        const jobs = [];
+        if (state.selectedSector && state.chartPeriods.sector === "daily") jobs.push(loadChart("sector", state.selectedSector.code), loadIntraday("sector", state.selectedSector.code, state.chartDate));
+        if (state.selectedStock && state.chartPeriods.stock === "daily") jobs.push(loadChart("stock", state.selectedStock.code), loadIntraday("stock", state.selectedStock.code, state.chartDate));
+        for (const job of jobs) await job;
+      } finally { realtimeRefreshBusy = false; }
+    }
+    setInterval(() => { if (marketLiveNow()) refreshRealtimeCharts().catch(() => {}); }, 15000);
+    window.addEventListener("resize",redrawTables);
+    function initTables() { requestAnimationFrame(() => {
+      const sectorHeight = Math.max(160, $("sectorTable").parentElement.clientHeight);
+      const stockHeight = Math.max(180, $("stockTable").parentElement.clientHeight);
+      sectorTable = new Tabulator("#sectorTable",{index:"code",layout:"fitColumns",selectableRows:1,columnDefaults:{widthGrow:1,widthShrink:1},movableColumns:true,resizableColumns:true,columns:columnsFor("sector",sectorFields)});
+      stockTable = new Tabulator("#stockTable",{index:"code",layout:"fitColumns",selectableRows:1,columnDefaults:{widthGrow:1,widthShrink:1},movableColumns:true,resizableColumns:true,columns:columnsFor("stock",stockFields)});
+      sectorTable.on("rowClick", (event, row) => { event?.preventDefault?.(); event?.stopPropagation?.(); selectSector(row.getData()); });
+      stockTable.on("rowClick", (event, row) => { event?.preventDefault?.(); event?.stopPropagation?.(); selectStock(row.getData()); });
+      $("stockTable").addEventListener("pointerdown", (event) => {
+        if (event.button !== 0) return;
+        const element = event.target.closest(".tabulator-row");
+        const row = element ? stockTable.getRows("visible").find((candidate) => candidate.getElement() === element) : null;
+        if (row) selectStock(row.getData());
+      }, true);
+      sectorTable.on("columnMoved", () => scheduleColumnSave("sector", sectorTable));
+      sectorTable.on("columnResized", () => scheduleColumnSave("sector", sectorTable));
+      stockTable.on("columnMoved", () => scheduleColumnSave("stock", stockTable));
+      stockTable.on("columnResized", () => scheduleColumnSave("stock", stockTable));
+      stockTable.on("scrollVertical", scheduleVisibleStockDetails);
+      stockTable.on("dataSorted", scheduleVisibleStockDetails);
+      [sectorTable, stockTable].forEach((table) => {
+        ["dataSorted", "dataFiltered", "dataChanged", "renderComplete"].forEach((event) => table.on(event, () => requestAnimationFrame(() => refreshRowNumbers(table))));
+      });
+      let builtTables = 0;
+      const startData = () => { builtTables += 1; redrawTables(); if (builtTables === 2) loadSectors(); };
+      sectorTable.on("tableBuilt", startData);
+      stockTable.on("tableBuilt", startData);
+    }); }
+    loadPreferences().then(() => { restoreChartPeriods(); migrateChartLayout(); return loadTradingDates(); }).finally(() => { migrateTimeFields(); initLayout(); initTables(); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "date": "undated",
+  "market": {
+    "limitUpCount": 0,
+    "limitDownCount": 0,
+    "maxBoardHeight": 0,
+    "boardCount": 0,
+    "mainlineConcentration": 0,
+    "brokenBoardRate": 0,
+    "yesterdayStrongFeedback": 0,
+    "highPositionNegativeFeedback": 0
+  },
+  "themes": [],
+  "stocks": [],
+  "assumptions": [
+    "maxBoardHeight derived from stocks",
+    "boardCount derived from stocks",
+    "mainlineConcentration derived from theme limit-up distribution"
+  ]
+}

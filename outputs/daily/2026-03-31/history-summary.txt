@@ -1,0 +1,24 @@
+﻿Total Entries: 5
+Latest Date: 2026-03-31
+Top Themes: 机器人(2)
+Top Environments: 进攻环境(2)
+Outcome Count: 3
+Avg Total PnL: 1.07%
+Avg Realized PnL: 0.6%
+Avg Win Rate: 56%
+Avg Discipline Score: 80.67
+Avg Matched Plan Rate: 78%
+Worst Drawdown: -1.8%
+Best Setup: 主线回流低吸(2.4%)
+Worst Setup: 中位接力(-1.5%)
+Closed Samples: 3
+Enough For Optimization: No
+Hard Stop Count: 0
+Best Environment: 进攻环境(2.8%)
+Best Theme: 机器人(2.8%)
+Rule Actions: 保留 0 / 收紧 0 / 禁用 0 / 观察 3
+
+Recommendations:
+- 闭环样本少于20天，当前统计更适合作为观察，不适合大幅改规则。
+- 闭环交易样本仍偏少，当前规则优化更适合作为观察清单，不适合一次性大改交易体系。
+- 以下买点样本仍不足，先继续跟踪: 龙头分歧转一致、前排换手板确认、临时跟随。

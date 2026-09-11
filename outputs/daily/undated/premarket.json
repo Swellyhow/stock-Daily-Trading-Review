@@ -1,0 +1,68 @@
+{
+  "date": "undated",
+  "marketJudgement": {
+    "environment": "冰点/恐慌",
+    "emotionCycle": "冰点",
+    "attackWindow": "防守观察",
+    "riskPreference": "弱",
+    "keyMetrics": {
+      "limitUpCount": 0,
+      "limitDownCount": 0,
+      "maxBoardHeight": 0,
+      "brokenBoardRate": "0%",
+      "mainlineConcentration": "0%"
+    }
+  },
+  "themes": {
+    "primaryTheme": "No clear mainline",
+    "secondaryTheme": "None",
+    "oneDayThemes": [],
+    "avoidThemes": [
+      "All non-core themes"
+    ]
+  },
+  "watchlist": {
+    "leader": "Unidentified",
+    "corePool": [],
+    "turnoverCandidates": [],
+    "lowPositionWatch": []
+  },
+  "executionPlan": {
+    "allowedSetups": [],
+    "forbiddenSetups": [
+      "追后排跟风",
+      "情绪退潮中的中位接力",
+      "追一致加速板",
+      "临时起意打板",
+      "非主线套利单"
+    ],
+    "sixQuestions": [
+      "Is it the mainline?",
+      "Is it a core stock?",
+      "Is the emotion stage allowing entry now?",
+      "Does the setup belong to the premarket plan?",
+      "Where is the invalidation point if wrong?",
+      "Is it worth using today’s position budget?"
+    ]
+  },
+  "positionPlan": {
+    "totalPosition": "空仓",
+    "structure": {
+      "leaderCore": 0,
+      "secondaryCore": 0,
+      "trial": 0
+    },
+    "retreatSignals": [
+      "龙头竞价严重低于预期",
+      "高位股批量负反馈",
+      "主线不回流",
+      "核心股炸板无法回封"
+    ],
+    "addSignals": [
+      "龙头超预期",
+      "板块联动加强",
+      "前排晋级顺畅",
+      "赚钱效应扩散"
+    ]
+  }
+}

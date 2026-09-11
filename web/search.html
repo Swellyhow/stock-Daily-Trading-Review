@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>资讯搜索</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .search-box { margin-bottom: 20px; }
+    #searchInput { width: 300px; padding: 8px; }
+    #searchBtn { padding: 8px 16px; margin-left: 10px; cursor: pointer; }
+    #sortBySelect { padding: 8px; margin-left: 10px; }
+    #metaInfo { margin: 10px 0; font-size: 0.9em; color: #666; }
+    .result-item { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .result-title { font-size: 1.1em; font-weight: bold; margin-bottom: 5px; }
+    .result-meta { font-size: 0.85em; color: #888; margin-bottom: 8px; }
+    .result-content { color: #333; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <h1>资讯搜索</h1>
+
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="输入关键词搜索..." />
+    <button id="searchBtn">搜索</button>
+    <select id="sortBySelect">
+      <option value="relate">相关度排序</option>
+      <option value="time">时间排序</option>
+    </select>
+  </div>
+
+  <div id="metaInfo" style="margin: 10px 0; font-size: 0.9em; color: #666;"></div>
+  <div id="results"></div>
+
+  <script>
+    const searchInput = document.getElementById("searchInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const sortBySelect = document.getElementById("sortBySelect");
+    const resultsDiv = document.getElementById("results");
+    const metaInfo = document.getElementById("metaInfo");
+
+    async function performSearch() {
+      const keyword = searchInput.value.trim();
+      if (!keyword) {
+        resultsDiv.innerHTML = "<p>请输入关键词</p>";
+        metaInfo.innerHTML = "";
+        return;
+      }
+      resultsDiv.innerHTML = "<p>搜索中...</p>";
+      metaInfo.innerHTML = "";
+
+      const sortBy = sortBySelect.value;
+      const response = await fetch(`/api/search?q=${encodeURIComponent(keyword)}&sortBy=${encodeURIComponent(sortBy)}`);
+      const data = await response.json();
+
+      if (!data.results || data.results.length === 0) {
+        resultsDiv.innerHTML = "<p>未找到相关结果</p>";
+        metaInfo.innerHTML = "";
+        return;
+      }
+
+      let metaHtml = `<strong>当前排序:</strong> ${data.sortBy === "time" ? "时间" : "相关度"} | `;
+      metaHtml += `<strong>来源统计:</strong> ${Object.entries(data.sourceFamilyStats ?? {}).map(([k, v]) => `${k}(${v})`).join(", ")} | `;
+      metaHtml += `<strong>查询明细:</strong> ${(data.queryVariants ?? []).map((v) => `${v.source}=${v.count}`).join(", ")}`;
+      metaInfo.innerHTML = metaHtml;
+
+      let html = "";
+      for (const item of data.results) {
+        const displayDate = (item.publishedAt || item.date || "").slice(0, 16).replace("T", " ");
+        html += `<div class="result-item">`;
+        html += `<div class="result-title"><a href="${item.jumpUrl}" target="_blank">${item.title}</a></div>`;
+        html += `<div class="result-meta">${item.source} | ${displayDate} | ${item.informationTypeLabel || item.informationType || ""}</div>`;
+        html += `<div class="result-content">${(item.content || item.trunk || "").slice(0, 200)}...</div>`;
+        html += `</div>`;
+      }
+      resultsDiv.innerHTML = html;
+    }
+
+    searchBtn.addEventListener("click", performSearch);
+    sortBySelect.addEventListener("change", performSearch);
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        performSearch();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+﻿{
+  "outcomes": [
+    {
+      "date": "2026-03-27",
+      "summary": {
+        "totalPnlPct": 1.6,
+        "realizedPnlPct": 1.1,
+        "maxDrawdownPct": -0.9,
+        "winRate": 0.67,
+        "tradeCount": 3,
+        "disciplineScore": 84,
+        "notes": "主线判断正确，但出手偏慢。"
+      },
+      "trades": [
+        {
+          "symbol": "中际旭创",
+          "theme": "通信设备",
+          "setup": "主线回流低吸",
+          "plannedSetup": "主线回流低吸",
+          "plannedTheme": "通信设备",
+          "pnlPct": 2.4,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 20,
+          "holdingDays": 2,
+          "entryStyle": "低吸",
+          "exitReason": "冲高兑现",
+          "entryConfidence": 0.72,
+          "tags": ["容量核心", "回流"],
+          "notes": ""
+        },
+        {
+          "symbol": "亨通光电",
+          "theme": "通信设备",
+          "setup": "前排换手板确认",
+          "plannedSetup": "前排换手板确认",
+          "plannedTheme": "通信设备",
+          "pnlPct": 1.1,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 15,
+          "holdingDays": 1,
+          "entryStyle": "回封",
+          "exitReason": "尾盘兑现",
+          "entryConfidence": 0.66,
+          "tags": ["前排"],
+          "notes": ""
+        },
+        {
+          "symbol": "远东股份",
+          "theme": "电网设备",
+          "setup": "首板消息套利",
+          "plannedSetup": "首板消息套利",
+          "plannedTheme": "电网设备",
+          "pnlPct": -0.8,
+          "result": "loss",
+          "matchedPlan": true,
+          "positionPct": 10,
+          "holdingDays": 1,
+          "entryStyle": "半路",
+          "exitReason": "冲高回落",
+          "entryConfidence": 0.53,
+          "tags": ["首板"],
+          "notes": ""
+        }
+      ]
+    },
+    {
+      "date": "2026-03-28",
+      "summary": {
+        "totalPnlPct": -1.2,
+        "realizedPnlPct": -1.4,
+        "maxDrawdownPct": -1.8,
+        "winRate": 0.33,
+        "tradeCount": 3,
+        "disciplineScore": 76,
+        "notes": "退潮期中位接力出现亏损。"
+      },
+      "trades": [
+        {
+          "symbol": "汇源通信",
+          "theme": "通信设备",
+          "setup": "龙头分歧转一致",
+          "plannedSetup": "龙头分歧转一致",
+          "plannedTheme": "通信设备",
+          "pnlPct": 0.6,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 15,
+          "holdingDays": 1,
+          "entryStyle": "打板",
+          "exitReason": "炸板兑现",
+          "entryConfidence": 0.64,
+          "tags": ["龙头"],
+          "notes": ""
+        },
+        {
+          "symbol": "远东股份",
+          "theme": "电网设备",
+          "setup": "中位接力",
+          "plannedSetup": "中位接力",
+          "plannedTheme": "电网设备",
+          "pnlPct": -1.5,
+          "result": "loss",
+          "matchedPlan": true,
+          "positionPct": 12,
+          "holdingDays": 1,
+          "entryStyle": "打板",
+          "exitReason": "不及预期止损",
+          "entryConfidence": 0.48,
+          "tags": ["中位"],
+          "notes": ""
+        },
+        {
+          "symbol": "新能泰山",
+          "theme": "电网设备",
+          "setup": "首板消息套利",
+          "plannedSetup": "首板消息套利",
+          "plannedTheme": "电网设备",
+          "pnlPct": -0.3,
+          "result": "loss",
+          "matchedPlan": false,
+          "positionPct": 8,
+          "holdingDays": 1,
+          "entryStyle": "半路",
+          "exitReason": "跟风回落",
+          "entryConfidence": 0.42,
+          "tags": ["跟风"],
+          "notes": "盘中临时起意。"
+        }
+      ]
+    }
+  ]
+}

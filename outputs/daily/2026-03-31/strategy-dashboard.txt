@@ -1,0 +1,12 @@
+﻿Total Samples: 3
+Closed Samples: 3
+Open Samples: 0
+Enough For Optimization: No
+Enough For Cross Regime Comparison: No
+Hard Stop Count: 0
+Best Environment: 进攻环境(2.8%)
+Best Theme: 机器人(2.8%)
+Best Regime: 进攻环境 | 启动 | 机器人(2.8%)
+
+Warnings:
+- 闭环样本少于20天，当前统计更适合作为观察，不适合大幅改规则。

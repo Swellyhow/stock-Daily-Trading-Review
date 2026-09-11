@@ -1,0 +1,49 @@
+﻿Date: 2026-03-31
+Environment: 进攻环境
+Emotion Cycle: 启动
+Attack Window: 停止出手
+Risk Preference: 强
+Preferred Mode: 连板接力
+Active Modes: 连板接力(80)
+Style Preference: 防守轮动
+Index State: 指数中性
+Volume State: 平量
+Risk Control: normal
+Yesterday Avg Premium: 0.00%
+Strong Premium Ratio: 0%
+
+Primary Theme: 机器人
+Secondary Theme: AI应用
+Primary Theme Type: 主线
+Narrative Label: 叙事偏弱，更依赖纯盘面强度
+Avoid Themes: Back-row follow-ons
+Top News Catalysts: None
+Catalyst Buckets: None
+Catalyst Warning: None
+Catalyst Details:
+- None
+Rejected News:
+- None
+
+Leader: 机器人龙头A
+Theme Leader: 机器人龙头A
+Capacity Cores: None
+Mid Army: None
+Core Pool: 机器人龙头A
+Turnover Candidates: None
+Low Position Watch: None
+
+Allowed Setups: None
+Forbidden Setups: 追后排跟风, 情绪退潮中的中位接力, 无预案主动追涨, 情绪化重仓试错, 未通过盘中六问仍强行出手, 计划外临时追涨
+Position Plan: 空仓
+Retreat Signals: 龙头竞价严重低于预期, 高位股批量负反馈, 主线不回流, 核心股炸板无法回封, 市场风格切到 防守轮动 之外的防守状态
+Add Signals: 龙头超预期, 板块联动加强, 前排晋级顺畅, 赚钱效应扩散, 指数与情绪共振增强
+Risk Rules: 单日回撤超过 2% 停止新增交易 | 连续 3 天亏损进入冷却期 | 单日出现 2 次计划外交易后收缩到轻仓观察 | 持仓数过多或可用资金过低时，优先去杠杆而不是继续试错
+
+Sell Style: 冲高分批兑现，保留最强核心观察仓
+State Machine: 进攻持有:继续持有或只做小幅减仓 | 兑现阶段:分批止盈 | 防守观察仓:减仓到观察仓 | 退出:清仓
+Take Profit: 分歧转一致次日高开冲高且板块同步给反馈，优先分批兑现先手。 | 主线核心出现一致性加速，而后排开始扩散时，不追高，已有仓位优先落袋。 | 容量核心放量冲高但板块跟随变弱时，先兑现一部分，再看龙头是否继续带动。
+Stop Loss: 买入逻辑被证伪时先认错，不等待情绪修复替你解套。 | 龙头或核心股竞价明显低于预期、回封失败、承接消失，按计划减仓或清仓。 | 非主线、非核心、非计划内交易一旦不及预期，默认快速退出。
+Emotion Warnings: 昨日强股平均溢价明显走弱或强溢价占比下降。 | 高位股批量负反馈，跌停和核按钮开始扩散。 | 主线内部只剩龙头孤撑，中位和后排同步掉队。
+Structure Warnings: 机器人龙头A 分时转弱、炸板后无法回封，说明情绪锚点失效。 | 未识别 量价背离、承接明显衰竭，说明容量资金开始撤退。 | 板块回流失败，第一次反抽不能带动前排和容量核心共振。
+Hold Conditions: 龙头分歧后仍有承接，且板块前排继续晋级。 | 容量核心放量上涨，中军或趋势核心同步加强。 | 昨日强股平均溢价维持正值，强溢价占比仍在 0% 以上附近。

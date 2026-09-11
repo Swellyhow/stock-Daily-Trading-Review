@@ -1,0 +1,72 @@
+﻿{
+  "date": "2026-03-31",
+  "market": {
+    "limitUpCount": 58,
+    "limitDownCount": 7,
+    "brokenBoardRate": 0.18,
+    "yesterdayStrongFeedback": 0.45,
+    "highPositionNegativeFeedback": 0.22
+  },
+  "themes": [
+    {
+      "name": "机器人",
+      "continuityDays": 3,
+      "limitUpCount": 13,
+      "maxBoardHeight": 5,
+      "hasLeader": true,
+      "hasMidCap": true,
+      "profitEffect": 0.7,
+      "linkageStrength": 0.75,
+      "newsCatalystStrength": 0.6
+    },
+    {
+      "name": "AI应用",
+      "continuityDays": 2,
+      "limitUpCount": 9,
+      "maxBoardHeight": 3,
+      "hasLeader": true,
+      "hasMidCap": false,
+      "profitEffect": 0.45,
+      "linkageStrength": 0.55,
+      "newsCatalystStrength": 0.5
+    }
+  ],
+  "stocks": [
+    {
+      "name": "机器人龙头A",
+      "theme": "机器人",
+      "boardHeight": 5,
+      "recognition": 0.95,
+      "auctionStrength": 0.8,
+      "reboundStrength": 0.75,
+      "followThrough": 0.8,
+      "volumeQuality": 0.7,
+      "isLeader": true,
+      "isMidPositionRisk": false
+    },
+    {
+      "name": "机器人核心B",
+      "theme": "机器人",
+      "boardHeight": 3,
+      "recognition": 0.82,
+      "auctionStrength": 0.65,
+      "reboundStrength": 0.6,
+      "followThrough": 0.7,
+      "volumeQuality": 0.75,
+      "isLeader": false,
+      "isMidPositionRisk": false
+    },
+    {
+      "name": "AI核心C",
+      "theme": "AI应用",
+      "boardHeight": 2,
+      "recognition": 0.72,
+      "auctionStrength": 0.55,
+      "reboundStrength": 0.5,
+      "followThrough": 0.52,
+      "volumeQuality": 0.68,
+      "isLeader": false,
+      "isMidPositionRisk": false
+    }
+  ]
+}

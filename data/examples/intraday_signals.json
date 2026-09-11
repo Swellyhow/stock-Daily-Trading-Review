@@ -1,0 +1,8 @@
+﻿{
+  "auctionStrength": 0.72,
+  "leaderStrength": 0.78,
+  "flowBackStrength": 0.68,
+  "recloseQuality": 0.66,
+  "highPositionRisk": 0.28,
+  "marketPressure": 0.32
+}

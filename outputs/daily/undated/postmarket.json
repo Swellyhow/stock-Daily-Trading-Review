@@ -1,0 +1,45 @@
+{
+  "date": "undated",
+  "marketReview": {
+    "environment": "冰点/恐慌",
+    "emotionCycle": "冰点",
+    "keyMetrics": {
+      "limitUpCount": 0,
+      "limitDownCount": 0,
+      "maxBoardHeight": 0,
+      "brokenBoardRate": "0%"
+    },
+    "conclusion": [
+      "涨停0家，跌停0家",
+      "连板高度0板，主线集中度0",
+      "炸板率0，昨日强股反馈0"
+    ]
+  },
+  "themeReview": {
+    "strongestTheme": "No clear mainline",
+    "backupTheme": "None",
+    "summary": "暂未识别出满足阈值的明确主线",
+    "riskyNames": []
+  },
+  "stockReview": {
+    "leader": "Unidentified",
+    "corePool": [],
+    "tomorrowFocus": []
+  },
+  "systemReview": {
+    "allowedSetupsWorked": [],
+    "setupsToAvoid": [
+      "追后排跟风",
+      "情绪退潮中的中位接力",
+      "追一致加速板",
+      "临时起意打板",
+      "非主线套利单"
+    ],
+    "positionPlan": "空仓",
+    "optimizationFocus": [
+      "Check whether the mainline concentration estimate matched reality",
+      "Review whether leader strength stayed ahead of the sector",
+      "Compare planned setups with actual intraday opportunities"
+    ]
+  }
+}

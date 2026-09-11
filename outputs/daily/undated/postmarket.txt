@@ -1,0 +1,18 @@
+Date: undated
+Environment Review: 冰点/恐慌
+Emotion Cycle Review: 冰点
+Market Conclusion: 涨停0家，跌停0家 | 连板高度0板，主线集中度0 | 炸板率0，昨日强股反馈0
+
+Strongest Theme: No clear mainline
+Backup Theme: None
+Theme Summary: 暂未识别出满足阈值的明确主线
+Risky Names: None
+
+Leader Review: Unidentified
+Core Pool Review: None
+Tomorrow Focus: None
+
+Allowed Setups Worked: None
+Setups To Avoid: 追后排跟风, 情绪退潮中的中位接力, 追一致加速板, 临时起意打板, 非主线套利单
+Position Plan Review: 空仓
+Optimization Focus: Check whether the mainline concentration estimate matched reality | Review whether leader strength stayed ahead of the sector | Compare planned setups with actual intraday opportunities

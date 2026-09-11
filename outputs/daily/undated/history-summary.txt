@@ -1,0 +1,13 @@
+Total Entries: 5
+Latest Date: undated
+Top Themes: 机器人(2), No clear mainline(2)
+Top Environments: 进攻环境(2), 冰点/恐慌(2)
+Outcome Count: 1
+Avg Total PnL: 2.8%
+Avg Realized PnL: 2.1%
+Avg Win Rate: 67%
+Avg Discipline Score: 82
+Worst Drawdown: -0.9%
+
+Recommendations:
+- A large share of days are weak. Tighten exposure and demand stronger confirmation before attacking.

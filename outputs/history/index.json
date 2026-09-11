@@ -1,0 +1,368 @@
+﻿{
+  "entries": [
+    {
+      "date": "2026-03-27",
+      "type": "outcome",
+      "generatedAt": "2026-04-05T08:27:18.353Z",
+      "totalPnlPct": 1.6,
+      "realizedPnlPct": 1.1,
+      "maxDrawdownPct": -0.9,
+      "winRate": 0.67,
+      "tradeCount": 3,
+      "disciplineScore": 84,
+      "matchedPlanRate": 1,
+      "setupBreakdown": [
+        {
+          "setup": "主线回流低吸",
+          "count": 1,
+          "totalPnlPct": 2.4,
+          "wins": 1,
+          "matchedPlanCount": 1,
+          "avgPnlPct": 2.4,
+          "winRate": 1,
+          "matchedPlanRate": 1
+        },
+        {
+          "setup": "前排换手板确认",
+          "count": 1,
+          "totalPnlPct": 1.1,
+          "wins": 1,
+          "matchedPlanCount": 1,
+          "avgPnlPct": 1.1,
+          "winRate": 1,
+          "matchedPlanRate": 1
+        },
+        {
+          "setup": "首板消息套利",
+          "count": 1,
+          "totalPnlPct": -0.8,
+          "wins": 0,
+          "matchedPlanCount": 1,
+          "avgPnlPct": -0.8,
+          "winRate": 0,
+          "matchedPlanRate": 1
+        }
+      ],
+      "tradeJournal": [
+        {
+          "symbol": "中际旭创",
+          "theme": "通信设备",
+          "setup": "主线回流低吸",
+          "pnlPct": 2.4,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 20,
+          "holdingDays": 2,
+          "entryStyle": "低吸",
+          "exitReason": "冲高兑现",
+          "entryConfidence": 0.72,
+          "plannedSetup": "主线回流低吸",
+          "plannedTheme": "通信设备",
+          "tags": [
+            "容量核心",
+            "回流"
+          ],
+          "notes": ""
+        },
+        {
+          "symbol": "亨通光电",
+          "theme": "通信设备",
+          "setup": "前排换手板确认",
+          "pnlPct": 1.1,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 15,
+          "holdingDays": 1,
+          "entryStyle": "回封",
+          "exitReason": "尾盘兑现",
+          "entryConfidence": 0.66,
+          "plannedSetup": "前排换手板确认",
+          "plannedTheme": "通信设备",
+          "tags": [
+            "前排"
+          ],
+          "notes": ""
+        },
+        {
+          "symbol": "远东股份",
+          "theme": "电网设备",
+          "setup": "首板消息套利",
+          "pnlPct": -0.8,
+          "result": "loss",
+          "matchedPlan": true,
+          "positionPct": 10,
+          "holdingDays": 1,
+          "entryStyle": "半路",
+          "exitReason": "冲高回落",
+          "entryConfidence": 0.53,
+          "plannedSetup": "首板消息套利",
+          "plannedTheme": "电网设备",
+          "tags": [
+            "首板"
+          ],
+          "notes": ""
+        }
+      ],
+      "artifacts": {
+        "json": "outputs\\history\\2026-03-27\\outcome.json",
+        "text": "outputs\\history\\2026-03-27\\outcome.txt"
+      }
+    },
+    {
+      "date": "2026-03-28",
+      "type": "outcome",
+      "generatedAt": "2026-04-05T08:27:18.389Z",
+      "totalPnlPct": -1.2,
+      "realizedPnlPct": -1.4,
+      "maxDrawdownPct": -1.8,
+      "winRate": 0.33,
+      "tradeCount": 3,
+      "disciplineScore": 76,
+      "matchedPlanRate": 0.67,
+      "setupBreakdown": [
+        {
+          "setup": "龙头分歧转一致",
+          "count": 1,
+          "totalPnlPct": 0.6,
+          "wins": 1,
+          "matchedPlanCount": 1,
+          "avgPnlPct": 0.6,
+          "winRate": 1,
+          "matchedPlanRate": 1
+        },
+        {
+          "setup": "中位接力",
+          "count": 1,
+          "totalPnlPct": -1.5,
+          "wins": 0,
+          "matchedPlanCount": 1,
+          "avgPnlPct": -1.5,
+          "winRate": 0,
+          "matchedPlanRate": 1
+        },
+        {
+          "setup": "首板消息套利",
+          "count": 1,
+          "totalPnlPct": -0.3,
+          "wins": 0,
+          "matchedPlanCount": 0,
+          "avgPnlPct": -0.3,
+          "winRate": 0,
+          "matchedPlanRate": 0
+        }
+      ],
+      "tradeJournal": [
+        {
+          "symbol": "汇源通信",
+          "theme": "通信设备",
+          "setup": "龙头分歧转一致",
+          "pnlPct": 0.6,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 15,
+          "holdingDays": 1,
+          "entryStyle": "打板",
+          "exitReason": "炸板兑现",
+          "entryConfidence": 0.64,
+          "plannedSetup": "龙头分歧转一致",
+          "plannedTheme": "通信设备",
+          "tags": [
+            "龙头"
+          ],
+          "notes": ""
+        },
+        {
+          "symbol": "远东股份",
+          "theme": "电网设备",
+          "setup": "中位接力",
+          "pnlPct": -1.5,
+          "result": "loss",
+          "matchedPlan": true,
+          "positionPct": 12,
+          "holdingDays": 1,
+          "entryStyle": "打板",
+          "exitReason": "不及预期止损",
+          "entryConfidence": 0.48,
+          "plannedSetup": "中位接力",
+          "plannedTheme": "电网设备",
+          "tags": [
+            "中位"
+          ],
+          "notes": ""
+        },
+        {
+          "symbol": "新能泰山",
+          "theme": "电网设备",
+          "setup": "首板消息套利",
+          "pnlPct": -0.3,
+          "result": "loss",
+          "matchedPlan": false,
+          "positionPct": 8,
+          "holdingDays": 1,
+          "entryStyle": "半路",
+          "exitReason": "跟风回落",
+          "entryConfidence": 0.42,
+          "plannedSetup": "首板消息套利",
+          "plannedTheme": "电网设备",
+          "tags": [
+            "跟风"
+          ],
+          "notes": "盘中临时起意。"
+        }
+      ],
+      "artifacts": {
+        "json": "outputs\\history\\2026-03-28\\outcome.json",
+        "text": "outputs\\history\\2026-03-28\\outcome.txt"
+      }
+    },
+    {
+      "date": "2026-03-31",
+      "type": "outcome",
+      "generatedAt": "2026-04-12T06:40:17.648Z",
+      "totalPnlPct": 2.8,
+      "realizedPnlPct": 2.1,
+      "maxDrawdownPct": -0.9,
+      "winRate": 0.67,
+      "tradeCount": 3,
+      "disciplineScore": 82,
+      "matchedPlanRate": 0.67,
+      "setupBreakdown": [
+        {
+          "setup": "龙头分歧转一致",
+          "count": 1,
+          "totalPnlPct": 2.4,
+          "wins": 1,
+          "matchedPlanCount": 1,
+          "avgPnlPct": 2.4,
+          "winRate": 1,
+          "matchedPlanRate": 1
+        },
+        {
+          "setup": "前排换手板确认",
+          "count": 1,
+          "totalPnlPct": 1.1,
+          "wins": 1,
+          "matchedPlanCount": 1,
+          "avgPnlPct": 1.1,
+          "winRate": 1,
+          "matchedPlanRate": 1
+        },
+        {
+          "setup": "临时跟随",
+          "count": 1,
+          "totalPnlPct": -0.7,
+          "wins": 0,
+          "matchedPlanCount": 0,
+          "avgPnlPct": -0.7,
+          "winRate": 0,
+          "matchedPlanRate": 0
+        }
+      ],
+      "tradeJournal": [
+        {
+          "symbol": "机器人龙头A",
+          "theme": "机器人",
+          "setup": "龙头分歧转一致",
+          "pnlPct": 2.4,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 0,
+          "holdingDays": 0,
+          "entryStyle": "Unknown",
+          "exitReason": "",
+          "entryConfidence": null,
+          "plannedSetup": "龙头分歧转一致",
+          "plannedTheme": "机器人",
+          "tags": [],
+          "notes": "Leader stayed ahead of sector."
+        },
+        {
+          "symbol": "机器人核心B",
+          "theme": "机器人",
+          "setup": "前排换手板确认",
+          "pnlPct": 1.1,
+          "result": "win",
+          "matchedPlan": true,
+          "positionPct": 0,
+          "holdingDays": 0,
+          "entryStyle": "Unknown",
+          "exitReason": "",
+          "entryConfidence": null,
+          "plannedSetup": "前排换手板确认",
+          "plannedTheme": "机器人",
+          "tags": [],
+          "notes": "Good follow-through."
+        },
+        {
+          "symbol": "AI核心C",
+          "theme": "AI应用",
+          "setup": "临时跟随",
+          "pnlPct": -0.7,
+          "result": "loss",
+          "matchedPlan": false,
+          "positionPct": 0,
+          "holdingDays": 0,
+          "entryStyle": "Unknown",
+          "exitReason": "",
+          "entryConfidence": null,
+          "plannedSetup": "临时跟随",
+          "plannedTheme": "AI应用",
+          "tags": [],
+          "notes": "Not strong enough versus mainline."
+        }
+      ],
+      "artifacts": {
+        "json": "outputs\\history\\2026-03-31\\outcome.json",
+        "text": "outputs\\history\\2026-03-31\\outcome.txt"
+      }
+    },
+    {
+      "date": "2026-03-31",
+      "type": "postmarket",
+      "generatedAt": "2026-04-12T06:40:17.596Z",
+      "environment": "进攻环境",
+      "emotionCycle": "启动",
+      "primaryTheme": "机器人",
+      "actionBias": "停止出手",
+      "positionPlan": "空仓",
+      "sellStyle": "冲高分批兑现，保留最强核心观察仓",
+      "leader": "机器人龙头A",
+      "themeLeader": "机器人龙头A",
+      "capacityCores": [],
+      "midArmy": [],
+      "dataConfidence": null,
+      "guardrailMode": "normal",
+      "guardrailBlocked": false,
+      "llmNewsCatalysts": [],
+      "llmNewsBuckets": {},
+      "artifacts": {
+        "json": "outputs\\history\\2026-03-31\\postmarket.json",
+        "text": "outputs\\history\\2026-03-31\\postmarket.txt"
+      }
+    },
+    {
+      "date": "2026-03-31",
+      "type": "premarket",
+      "generatedAt": "2026-04-12T06:40:17.596Z",
+      "environment": "进攻环境",
+      "emotionCycle": "启动",
+      "primaryTheme": "机器人",
+      "actionBias": "停止出手",
+      "positionPlan": "空仓",
+      "sellStyle": "冲高分批兑现，保留最强核心观察仓",
+      "leader": "机器人龙头A",
+      "themeLeader": "机器人龙头A",
+      "capacityCores": [],
+      "midArmy": [],
+      "dataConfidence": null,
+      "guardrailMode": "normal",
+      "guardrailBlocked": false,
+      "llmNewsCatalysts": [],
+      "llmNewsBuckets": {},
+      "artifacts": {
+        "json": "outputs\\history\\2026-03-31\\premarket.json",
+        "text": "outputs\\history\\2026-03-31\\premarket.txt"
+      }
+    }
+  ]
+}

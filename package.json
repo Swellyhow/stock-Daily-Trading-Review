@@ -1,0 +1,41 @@
+{
+  "name": "a-share-sentiment-decision-system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "analyze": "node src/index.js --input data/examples/sample_snapshot.json",
+    "analyze:raw": "node src/index.js --mode analyze-raw --input data/examples/raw_market_notes.json",
+    "normalize": "node src/index.js --mode normalize --input data/examples/raw_market_notes.json",
+    "report": "node src/index.js --mode analyze-raw --format text --input data/examples/raw_market_notes.json",
+    "premarket": "node src/index.js --mode premarket --format text --input data/examples/raw_market_notes.json",
+    "postmarket": "node src/index.js --mode postmarket --format text --input data/examples/raw_market_notes.json",
+    "archive:premarket": "node src/index.js --mode archive-premarket --format text --input data/examples/raw_market_notes.json",
+    "archive:postmarket": "node src/index.js --mode archive-postmarket --format text --input data/examples/raw_market_notes.json",
+    "intraday": "node src/index.js --mode intraday --format text --input data/examples/intraday_signals.json",
+    "intraday:live": "node src/index.js --mode intraday-live --format text",
+    "outcome": "node src/index.js --mode outcome --format text --input data/examples/trade_outcome.json",
+    "archive:outcome": "node src/index.js --mode archive-outcome --format text --input data/examples/trade_outcome.json",
+    "position:sell": "node src/index.js --mode position-sell --format text --input data/examples/position_sell_input.json",
+    "history:summary": "node src/index.js --mode history-summary --format text",
+    "daily": "node src/index.js --mode daily --format text --input data/examples/daily_run.json",
+    "daily:md": "node src/index.js --mode daily-markdown --format text --input data/examples/daily_run.md",
+    "auto:live": "node src/index.js --mode auto-live --format text",
+    "analyze:file": "node src/index.js",
+    "check": "node --check src/index.js",
+    "archive:outcome:batch": "node src/index.js --mode archive-outcome-batch --format text --input data/examples/trade_outcome_batch.json",
+    "web:build": "node src/build-web-dashboard.js",
+    "web:start": "node src/web-server.js",
+    "web": "node src/web-server.js",
+    "web:data": "node web/search-server.js"
+  },
+  "dependencies": {
+    "axios": "^1.15.1",
+    "better-sqlite3": "^12.9.0",
+    "cheerio": "^1.2.0",
+    "esbuild": "^0.28.0",
+    "express": "^5.2.1",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  }
+}

@@ -1,0 +1,37 @@
+﻿{
+  "date": "YYYY-MM-DD",
+  "market": {
+    "limitUpCount": 0,
+    "limitDownCount": 0,
+    "brokenBoardRate": 0.0,
+    "yesterdayStrongFeedback": 0.0,
+    "highPositionNegativeFeedback": 0.0
+  },
+  "themes": [
+    {
+      "name": "题材名",
+      "continuityDays": 0,
+      "limitUpCount": 0,
+      "maxBoardHeight": 0,
+      "hasLeader": false,
+      "hasMidCap": false,
+      "profitEffect": 0.0,
+      "linkageStrength": 0.0,
+      "newsCatalystStrength": 0.0
+    }
+  ],
+  "stocks": [
+    {
+      "name": "股票名",
+      "theme": "题材名",
+      "boardHeight": 0,
+      "recognition": 0.0,
+      "auctionStrength": 0.0,
+      "reboundStrength": 0.0,
+      "followThrough": 0.0,
+      "volumeQuality": 0.0,
+      "isLeader": false,
+      "isMidPositionRisk": false
+    }
+  ]
+}

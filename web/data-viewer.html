@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>原始数据查看器 - A股游资</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .header .subtitle {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    .controls {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .controls h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #667eea;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .control-group label {
+      font-weight: 500;
+      color: #555;
+    }
+
+    .control-group input,
+    .control-group select,
+    .control-group button {
+      padding: 8px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .control-group button {
+      background: #667eea;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .control-group button:hover {
+      background: #5568d3;
+    }
+
+    .control-group button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .status.loading {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .data-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .data-section h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .data-section .badge {
+      background: #667eea;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .data-item {
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      border-left: 3px solid #667eea;
+    }
+
+    .data-item .label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .data-item .value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .data-item .value.positive {
+      color: #e74c3c;
+    }
+
+    .data-item .value.negative {
+      color: #27ae60;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .data-table th {
+      background: #f8f9fa;
+      padding: 10px;
+      text-align: left;
+      font-weight: 600;
+      color: #555;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    .data-table td {
+      padding: 10px;
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .data-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .data-table .positive {
+      color: #e74c3c;
+      font-weight: 600;
+    }
+
+    .data-table .negative {
+      color: #27ae60;
+      font-weight: 600;
+    }
+
+    .json-viewer {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .json-viewer pre {
+      margin: 0;
+    }
+
+    .toggle-json {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #667eea;
+      font-weight: 500;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .toggle-json:hover {
+      background: #e9ecef;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #dee2e6;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab:hover {
+      color: #667eea;
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📊 原始数据查看器</h1>
+    <div class="subtitle">验证外部数据获取的准确性和完整性</div>
+  </div>
+
+  <div class="container">
+    <div class="controls">
+      <h2>数据获取控制</h2>
+      <div class="control-group">
+        <label>交易日期:</label>
+        <input type="date" id="tradeDate" />
+
+        <button id="fetchBtn" onclick="fetchData()">获取数据</button>
+        <button onclick="fetchData(true)">获取今日数据</button>
+      </div>
+      <div id="status" class="status hidden"></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('overview')">市场概览</button>
+      <button class="tab" onclick="switchTab('limitup')">涨停池</button>
+      <button class="tab" onclick="switchTab('limitdown')">跌停池</button>
+      <button class="tab" onclick="switchTab('yesterday')">昨日涨停池</button>
+      <button class="tab" onclick="switchTab('concepts')">概念板块</button>
+      <button class="tab" onclick="switchTab('indices')">市场指数</button>
+      <button class="tab" onclick="switchTab('news')">新闻快讯</button>
+      <button class="tab" onclick="switchTab('raw')">原始JSON</button>
+    </div>
+
+    <div id="overview" class="tab-content active">
+      <div class="data-section">
+        <h2>市场概览</h2>
+        <div class="data-grid" id="overviewGrid"></div>
+      </div>
+    </div>
+
+    <div id="limitup" class="tab-content">
+      <div class="data-section">
+        <h2>涨停池 <span class="badge" id="limitupCount">0</span></h2>
+        <div id="limitupTable"></div>
+      </div>
+    </div>
+
+    <div id="limitdown" class="tab-content">
+      <div class="data-section">
+        <h2>跌停池 <span class="badge" id="limitdownCount">0</span></h2>
+        <div id="limitdownTable"></div>
+      </div>
+    </div>
+
+    <div id="yesterday" class="tab-content">
+      <div class="data-section">
+        <h2>昨日涨停池 <span class="badge" id="yesterdayCount">0</span></h2>
+        <div id="yesterdayTable"></div>
+      </div>
+    </div>
+
+    <div id="concepts" class="tab-content">
+      <div class="data-section">
+        <h2>概念板块 <span class="badge" id="conceptsCount">0</span></h2>
+        <div id="conceptsTable"></div>
+      </div>
+    </div>
+
+    <div id="indices" class="tab-content">
+      <div class="data-section">
+        <h2>市场指数</h2>
+        <div id="indicesContent"></div>
+      </div>
+    </div>
+
+    <div id="news" class="tab-content">
+      <div class="data-section">
+        <h2>新闻快讯 <span class="badge" id="newsCount">0</span></h2>
+        <div id="newsContent"></div>
+      </div>
+    </div>
+
+    <div id="raw" class="tab-content">
+      <div class="data-section">
+        <h2>原始JSON数据</h2>
+        <div class="json-viewer" id="rawJson"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentData = null;
+
+    // 初始化日期为今天
+    document.getElementById('tradeDate').valueAsDate = new Date();
+
+    function switchTab(tabName) {
+      // 切换标签激活状态
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // 切换内容显示
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = `status ${type}`;
+      status.classList.remove('hidden');
+    }
+
+    function hideStatus() {
+      document.getElementById('status').classList.add('hidden');
+    }
+
+    async function fetchData(useToday = false) {
+      const btn = document.getElementById('fetchBtn');
+      btn.disabled = true;
+      showStatus('正在获取数据...', 'loading');
+
+      try {
+        let url = '/api/raw-data';
+        if (!useToday) {
+          const dateInput = document.getElementById('tradeDate').value;
+          if (dateInput) {
+            const date = dateInput.replace(/-/g, '');
+            url += `?date=${date}`;
+          }
+        }
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        currentData = await response.json();
+        renderData(currentData);
+        showStatus(`数据获取成功 - 交易日期: ${currentData.date}`, 'success');
+      } catch (error) {
+        showStatus(`数据获取失败: ${error.message}`, 'error');
+        console.error('获取数据失败:', error);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function renderData(data) {
+      renderOverview(data);
+      renderLimitUpPool(data.limitUpPool || []);
+      renderLimitDownPool(data.limitDownPool || []);
+      renderYesterdayPool(data.previousLimitUpPool || []);
+      renderConceptBoards(data.conceptBoards || []);
+      renderIndices(data.marketIndices);
+      renderNews(data.fastNews || []);
+      renderRawJson(data);
+    }
+
+    function renderOverview(data) {
+      const grid = document.getElementById('overviewGrid');
+      const overview = [
+        { label: '交易日期', value: data.date || '-' },
+        { label: '涨停数量', value: (data.limitUpPool || []).length },
+        { label: '跌停数量', value: (data.limitDownPool || []).length },
+        { label: '昨日涨停数', value: (data.previousLimitUpPool || []).length },
+        { label: '概念板块数', value: (data.conceptBoards || []).length },
+        { label: '新闻快讯数', value: (data.fastNews || []).length },
+        { label: '是否回退日期', value: data.isFallbackTradeDate ? '是' : '否' },
+        { label: '请求日期', value: data.requestedTradeDate || '-' },
+        { label: '实际日期', value: data.resolvedTradeDate || '-' },
+      ];
+
+      if (data.marketIndices) {
+        overview.push(
+          { label: '两市成交额', value: data.marketIndices.totalTurnoverBn ? `${data.marketIndices.totalTurnoverBn}亿` : '-' },
+          { label: '成交额变化', value: data.marketIndices.turnoverDeltaPct ? `${data.marketIndices.turnoverDeltaPct}%` : '-' },
+          { label: '上证指数', value: data.marketIndices.shanghaiComposite ? `${data.marketIndices.shanghaiComposite.changePct}%` : '-' }
+        );
+      }
+
+      grid.innerHTML = overview.map(item => `
+        <div class="data-item">
+          <div class="label">${item.label}</div>
+          <div class="value">${item.value}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderLimitUpPool(pool) {
+      document.getElementById('limitupCount').textContent = pool.length;
+      const table = document.getElementById('limitupTable');
+
+      if (pool.length === 0) {
+        table.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">暂无数据</p>';
+        return;
+      }
+
+      table.innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>股票代码</th>
+              <th>股票名称</th>
+              <th>最新价</th>
+              <th>涨跌幅</th>
+              <th>成交额(万)</th>
+              <th>换手率</th>
+              <th>连板数</th>
+              <th>首次涨停</th>
+              <th>封单金额(万)</th>
+              <th>炸板次数</th>
+              <th>所属行业</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pool.map((item, index) => `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.code || '-'}</td>
+                <td><strong>${item.name || '-'}</strong></td>
+                <td>${item.latestPrice ? item.latestPrice.toFixed(2) : '-'}</td>
+                <td class="positive">${item.changePct ? item.changePct.toFixed(2) + '%' : '-'}</td>
+                <td>${item.amount ? (item.amount / 10000).toFixed(0) : '-'}</td>
+                <td>${item.turnoverPct ? item.turnoverPct.toFixed(2) + '%' : '-'}</td>
+                <td><strong>${item.boardCount || 0}</strong></td>
+                <td>${item.firstLimitTime || '-'}</td>
+                <td>${item.sealAmount ? (item.sealAmount / 10000).toFixed(0) : '-'}</td>
+                <td>${item.brokenCount || 0}</td>
+                <td>${item.industry || '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderLimitDownPool(pool) {
+      document.getElementById('limitdownCount').textContent = pool.length;
+      const table = document.getElementById('limitdownTable');
+
+      if (pool.length === 0) {
+        table.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">暂无数据</p>';
+        return;
+      }
+
+      table.innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>股票代码</th>
+              <th>股票名称</th>
+              <th>最新价</th>
+              <th>涨跌幅</th>
+              <th>成交额(万)</th>
+              <th>换手率</th>
+              <th>所属行业</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pool.map((item, index) => `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.code || '-'}</td>
+                <td><strong>${item.name || '-'}</strong></td>
+                <td>${item.latestPrice ? item.latestPrice.toFixed(2) : '-'}</td>
+                <td class="negative">${item.changePct ? item.changePct.toFixed(2) + '%' : '-'}</td>
+                <td>${item.amount ? (item.amount / 10000).toFixed(0) : '-'}</td>
+                <td>${item.turnoverPct ? item.turnoverPct.toFixed(2) + '%' : '-'}</td>
+                <td>${item.industry || '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderYesterdayPool(pool) {
+      document.getElementById('yesterdayCount').textContent = pool.length;
+      const table = document.getElementById('yesterdayTable');
+
+      if (pool.length === 0) {
+        table.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">暂无数据</p>';
+        return;
+      }
+
+      table.innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>股票代码</th>
+              <th>股票名称</th>
+              <th>今日涨跌幅</th>
+              <th>昨日连板数</th>
+              <th>今日成交额(万)</th>
+              <th>今日换手率</th>
+              <th>所属行业</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pool.map((item, index) => `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.code || '-'}</td>
+                <td><strong>${item.name || '-'}</strong></td>
+                <td class="${item.changePct > 0 ? 'positive' : item.changePct < 0 ? 'negative' : ''}">
+                  ${item.changePct ? item.changePct.toFixed(2) + '%' : '-'}
+                </td>
+                <td>${item.boardCount || 0}</td>
+                <td>${item.amount ? (item.amount / 10000).toFixed(0) : '-'}</td>
+                <td>${item.turnoverPct ? item.turnoverPct.toFixed(2) + '%' : '-'}</td>
+                <td>${item.industry || '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderConceptBoards(boards) {
+      document.getElementById('conceptsCount').textContent = boards.length;
+      const table = document.getElementById('conceptsTable');
+
+      if (boards.length === 0) {
+        table.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">暂无数据</p>';
+        return;
+      }
+
+      table.innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>板块代码</th>
+              <th>板块名称</th>
+              <th>最新价</th>
+              <th>涨跌幅</th>
+              <th>主力净流入(万)</th>
+              <th>龙头股</th>
+              <th>龙头涨跌幅</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${boards.map((item, index) => `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.code || '-'}</td>
+                <td><strong>${item.name || '-'}</strong></td>
+                <td>${item.latestPrice ? item.latestPrice.toFixed(2) : '-'}</td>
+                <td class="${item.changePct > 0 ? 'positive' : item.changePct < 0 ? 'negative' : ''}">
+                  ${item.changePct ? item.changePct.toFixed(2) + '%' : '-'}
+                </td>
+                <td class="${item.mainNetInflow > 0 ? 'positive' : item.mainNetInflow < 0 ? 'negative' : ''}">
+                  ${item.mainNetInflow ? (item.mainNetInflow / 10000).toFixed(0) : '-'}
+                </td>
+                <td>${item.leaderName || '-'}</td>
+                <td class="${item.leaderChangePct > 0 ? 'positive' : item.leaderChangePct < 0 ? 'negative' : ''}">
+                  ${item.leaderChangePct ? item.leaderChangePct.toFixed(2) + '%' : '-'}
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderIndices(indices) {
+      const content = document.getElementById('indicesContent');
+
+      if (!indices) {
+        content.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">暂无数据</p>';
+        return;
+      }
+
+      const indexList = [
+        { key: 'shanghaiComposite', label: '上证指数' },
+        { key: 'shenzhenComponent', label: '深证成指' },
+        { key: 'chinext', label: '创业板指' },
+        { key: 'hs300', label: '沪深300' },
+        { key: 'guozheng2000', label: '国证2000' },
+        { key: 'science50', label: '科创50' }
+      ];
+
+      let html = '<div class="data-grid">';
+
+      // 汇总指标
+      html += `
+        <div class="data-item">
+          <div class="label">大盘综合涨跌幅</div>
+          <div class="value ${indices.indexChangePct > 0 ? 'positive' : indices.indexChangePct < 0 ? 'negative' : ''}">
+            ${indices.indexChangePct !== null ? indices.indexChangePct + '%' : '-'}
+          </div>
+        </div>
+        <div class="data-item">
+          <div class="label">两市总成交额</div>
+          <div class="value">${indices.totalTurnoverBn ? indices.totalTurnoverBn + '亿' : '-'}</div>
+        </div>
+        <div class="data-item">
+          <div class="label">成交额变化</div>
+          <div class="value ${indices.turnoverDeltaPct > 0 ? 'positive' : indices.turnoverDeltaPct < 0 ? 'negative' : ''}">
+            ${indices.turnoverDeltaPct !== null ? indices.turnoverDeltaPct + '%' : '-'}
+          </div>
+        </div>
+        <div class="data-item">
+          <div class="label">风格差(小-大)</div>
+          <div class="value ${indices.styleSpreadPct > 0 ? 'positive' : indices.styleSpreadPct < 0 ? 'negative' : ''}">
+            ${indices.styleSpreadPct !== null ? indices.styleSpreadPct + '%' : '-'}
+          </div>
+        </div>
+      `;
+      html += '</div>';
+
+      // 各指数详情
+      html += '<table class="data-table" style="margin-top: 20px;"><thead><tr>';
+      html += '<th>指数名称</th><th>代码</th><th>最新价</th><th>涨跌幅</th><th>涨跌额</th><th>振幅</th><th>成交额(亿)</th>';
+      html += '</tr></thead><tbody>';
+
+      indexList.forEach(({ key, label }) => {
+        const index = indices[key];
+        if (index) {
+          html += `
+            <tr>
+              <td><strong>${label}</strong></td>
+              <td>${index.code || '-'}</td>
+              <td>${index.latestPrice ? index.latestPrice.toFixed(2) : '-'}</td>
+              <td class="${index.changePct > 0 ? 'positive' : index.changePct < 0 ? 'negative' : ''}">
+                ${index.changePct ? index.changePct.toFixed(2) + '%' : '-'}
+              </td>
+              <td class="${index.changeAmount > 0 ? 'positive' : index.changeAmount < 0 ? 'negative' : ''}">
+                ${index.changeAmount ? index.changeAmount.toFixed(2) : '-'}
+              </td>
+              <td>${index.amplitudePct ? index.amplitudePct.toFixed(2) + '%' : '-'}</td>
+              <td>${index.amount ? (index.amount / 100000000).toFixed(2) : '-'}</td>
+            </tr>
+          `;
+        }
+      });
+
+      html += '</tbody></table>';
+      content.innerHTML = html;
+    }
+
+    function renderNews(news) {
+      document.getElementById('newsCount').textContent = news.length;
+      const content = document.getElementById('newsContent');
+
+      if (news.length === 0) {
+        content.innerHTML = '<p style="color: #999; padding: 20px; text-align: center;">暂无数据</p>';
+        return;
+      }
+
+      content.innerHTML = `
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 60px;">序号</th>
+              <th>标题</th>
+              <th style="width: 120px;">来源</th>
+              <th style="width: 180px;">发布时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${news.map((item, index) => `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.title || '-'}</td>
+                <td>${item.source || '-'}</td>
+                <td>${item.publishedAt || item.date || '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderRawJson(data) {
+      const json = document.getElementById('rawJson');
+      json.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+
+    // 页面加载时自动获取今日数据
+    window.addEventListener('load', () => {
+      fetchData(true);
+    });
+  </script>
+</body>
+</html>

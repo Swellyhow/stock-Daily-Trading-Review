@@ -1,0 +1,62 @@
+{
+  "totalEntries": 5,
+  "latestDate": "undated",
+  "counts": {
+    "type": {
+      "outcome": 1,
+      "postmarket": 2,
+      "premarket": 2
+    },
+    "environment": {
+      "进攻环境": 2,
+      "冰点/恐慌": 2
+    },
+    "emotionCycle": {
+      "发酵": 2,
+      "冰点": 2
+    },
+    "primaryTheme": {
+      "机器人": 2,
+      "No clear mainline": 2
+    },
+    "actionBias": {
+      "主动进攻": 2,
+      "防守观察": 2
+    },
+    "positionPlan": {
+      "7成仓": 2,
+      "空仓": 2
+    }
+  },
+  "performance": {
+    "outcomeCount": 1,
+    "avgTotalPnlPct": 2.8,
+    "avgRealizedPnlPct": 2.1,
+    "avgWinRate": 0.67,
+    "avgDisciplineScore": 82,
+    "worstDrawdownPct": -0.9
+  },
+  "topThemes": [
+    {
+      "name": "机器人",
+      "count": 2
+    },
+    {
+      "name": "No clear mainline",
+      "count": 2
+    }
+  ],
+  "topEnvironments": [
+    {
+      "name": "进攻环境",
+      "count": 2
+    },
+    {
+      "name": "冰点/恐慌",
+      "count": 2
+    }
+  ],
+  "recommendations": [
+    "A large share of days are weak. Tighten exposure and demand stronger confirmation before attacking."
+  ]
+}

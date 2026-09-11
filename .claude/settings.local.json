@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(taskkill //PID 1836 //F)",
+      "Bash(kill -9 1836)",
+      "Bash(node web/search-server.js)",
+      "Bash(jobs)",
+      "Bash(curl -s \"http://localhost:3000/api/history/sync-status\")",
+      "Bash(taskkill //PID 24672 //F)",
+      "Bash(node sync-data.js help)",
+      "Bash(node sync-data.js status)"
+    ]
+  }
+}

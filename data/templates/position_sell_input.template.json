@@ -1,0 +1,64 @@
+﻿{
+  "date": "YYYY-MM-DD",
+  "marketNotes": {
+    "market": {
+      "limitUpCount": 0,
+      "limitDownCount": 0,
+      "brokenBoardRate": 0.0,
+      "yesterdayStrongFeedback": 0.0,
+      "highPositionNegativeFeedback": 0.0,
+      "avgYesterdayPremiumPct": 0.0,
+      "strongPremiumRatio": 0.0,
+      "deepNegativeRatio": 0.0
+    },
+    "themes": [
+      {
+        "name": "题材名",
+        "continuityDays": 0,
+        "limitUpCount": 0,
+        "maxBoardHeight": 0,
+        "hasLeader": false,
+        "hasMidCap": false,
+        "profitEffect": 0.0,
+        "nextDayPremiumScore": 0.0,
+        "comebackStrength": 0.0,
+        "linkageStrength": 0.0,
+        "newsCatalystStrength": 0.0
+      }
+    ],
+    "stocks": [
+      {
+        "name": "股票名",
+        "theme": "题材名",
+        "boardHeight": 0,
+        "amount": 0,
+        "turnoverPct": 0.0,
+        "liquidityScore": 0.0,
+        "recognition": 0.0,
+        "auctionStrength": 0.0,
+        "reboundStrength": 0.0,
+        "followThrough": 0.0,
+        "volumeQuality": 0.0,
+        "isLeader": false,
+        "isMidPositionRisk": false,
+        "isCapacityCoreCandidate": false
+      }
+    ]
+  },
+  "holdings": [
+    {
+      "symbol": "600000",
+      "name": "股票名",
+      "theme": "题材名",
+      "role": "前排核心",
+      "positionPct": 10,
+      "pnlPct": 0.0,
+      "holdingDays": 1,
+      "entryStyle": "回封",
+      "plannedSetup": "龙头分歧转一致",
+      "actualSetup": "龙头分歧转一致",
+      "matchedPlan": true,
+      "notes": ""
+    }
+  ]
+}

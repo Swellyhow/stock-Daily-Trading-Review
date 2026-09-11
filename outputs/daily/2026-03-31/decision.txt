@@ -1,0 +1,28 @@
+﻿Date: 2026-03-31
+Environment: 进攻环境
+Emotion Cycle: 启动
+Primary Theme: 机器人
+Preferred Mode: 连板接力
+Style Preference: 防守轮动
+Action Bias: 停止出手
+Position Plan: 空仓
+Guardrail Mode: normal
+Risk Control: normal
+Data Confidence: N/A
+
+Environment Basis: 涨停58家，跌停7家 | 连板高度5板，主线集中度0.59 | 炸板率0.18，昨日强股反馈0.45 | 昨日平均溢价0.00%，强溢价占比0.00，深负反馈占比0.00 | 指数共振分67，风格偏防守轮动
+Emotion Basis: 环境分85 | 昨日强股反馈0.45 | 昨日平均溢价0.00% | 强溢价占比0.00 | 高位负反馈0.22 | 指数共振分67
+Regime Basis: 指数变化 2.00%，成长风格 0.70% | 大票 2.00%，小票 0.70%，风格差 -1.30% | 量能状态 平量，成交额 1111 亿，量能变化 5.89% | 指数状态 指数中性，共振状态 背离，风格状态 权重大票占优 | 当前更匹配的市场风格是 防守轮动 | 数据源 市场结构推导
+Mode Summary: 当前更适合围绕 连板接力 这类打法展开。
+Theme Summary: 机器人 当前最像主线，梯队完整（龙头0/前排0/中位0/低位0/容量0），次日溢价与回流能力一般，叙事判断为叙事偏弱，更依赖纯盘面强度，梯队解读为梯队信息不足
+Leader: 机器人龙头A
+Theme Leader: 机器人龙头A
+Capacity Cores: None
+Mid Army: None
+Core Pool: 机器人龙头A
+Risky Names: 机器人核心B, AI核心C
+Allowed Setups: None
+Forbidden Setups: 追后排跟风, 情绪退潮中的中位接力, 无预案主动追涨, 情绪化重仓试错, 未通过盘中六问仍强行出手, 计划外临时追涨
+Sell Style: 冲高分批兑现，保留最强核心观察仓
+Guardrail Reasons: None
+Risk Reasons: None

@@ -1,0 +1,787 @@
+﻿{
+  "totalEntries": 5,
+  "latestDate": "2026-03-31",
+  "counts": {
+    "type": {
+      "outcome": 3,
+      "postmarket": 1,
+      "premarket": 1
+    },
+    "environment": {
+      "进攻环境": 2
+    },
+    "emotionCycle": {
+      "启动": 2
+    },
+    "primaryTheme": {
+      "机器人": 2
+    },
+    "actionBias": {
+      "停止出手": 2
+    },
+    "positionPlan": {
+      "空仓": 2
+    },
+    "guardrailMode": {
+      "normal": 2
+    }
+  },
+  "performance": {
+    "outcomeCount": 3,
+    "avgTotalPnlPct": 1.07,
+    "avgRealizedPnlPct": 0.6,
+    "avgWinRate": 0.56,
+    "avgDisciplineScore": 80.67,
+    "avgMatchedPlanRate": 0.78,
+    "worstDrawdownPct": -1.8
+  },
+  "setupPerformance": [
+    {
+      "setup": "主线回流低吸",
+      "totalCount": 1,
+      "avgPnlPct": 2.4,
+      "avgWinRate": 1,
+      "avgMatchedPlanRate": 1
+    },
+    {
+      "setup": "龙头分歧转一致",
+      "totalCount": 2,
+      "avgPnlPct": 1.5,
+      "avgWinRate": 1,
+      "avgMatchedPlanRate": 1
+    },
+    {
+      "setup": "前排换手板确认",
+      "totalCount": 2,
+      "avgPnlPct": 1.1,
+      "avgWinRate": 1,
+      "avgMatchedPlanRate": 1
+    },
+    {
+      "setup": "首板消息套利",
+      "totalCount": 2,
+      "avgPnlPct": -0.55,
+      "avgWinRate": 0,
+      "avgMatchedPlanRate": 0.5
+    },
+    {
+      "setup": "临时跟随",
+      "totalCount": 1,
+      "avgPnlPct": -0.7,
+      "avgWinRate": 0,
+      "avgMatchedPlanRate": 0
+    },
+    {
+      "setup": "中位接力",
+      "totalCount": 1,
+      "avgPnlPct": -1.5,
+      "avgWinRate": 0,
+      "avgMatchedPlanRate": 1
+    }
+  ],
+  "topThemes": [
+    {
+      "name": "机器人",
+      "count": 2
+    }
+  ],
+  "topEnvironments": [
+    {
+      "name": "进攻环境",
+      "count": 2
+    }
+  ],
+  "samples": [
+    {
+      "date": "2026-03-27",
+      "hasPremarket": false,
+      "hasPostmarket": false,
+      "hasOutcome": true,
+      "environment": null,
+      "emotionCycle": null,
+      "primaryTheme": null,
+      "actionBias": null,
+      "positionPlan": null,
+      "dataConfidence": null,
+      "guardrailMode": null,
+      "hardStop": false,
+      "totalPnlPct": 1.6,
+      "realizedPnlPct": 1.1,
+      "winRate": 0.67,
+      "disciplineScore": 84,
+      "matchedPlanRate": 1,
+      "bestSetup": "主线回流低吸",
+      "worstSetup": "首板消息套利",
+      "regimeKey": null,
+      "sampleStatus": "closed"
+    },
+    {
+      "date": "2026-03-28",
+      "hasPremarket": false,
+      "hasPostmarket": false,
+      "hasOutcome": true,
+      "environment": null,
+      "emotionCycle": null,
+      "primaryTheme": null,
+      "actionBias": null,
+      "positionPlan": null,
+      "dataConfidence": null,
+      "guardrailMode": null,
+      "hardStop": false,
+      "totalPnlPct": -1.2,
+      "realizedPnlPct": -1.4,
+      "winRate": 0.33,
+      "disciplineScore": 76,
+      "matchedPlanRate": 0.67,
+      "bestSetup": "龙头分歧转一致",
+      "worstSetup": "首板消息套利",
+      "regimeKey": null,
+      "sampleStatus": "closed"
+    },
+    {
+      "date": "2026-03-31",
+      "hasPremarket": true,
+      "hasPostmarket": true,
+      "hasOutcome": true,
+      "environment": "进攻环境",
+      "emotionCycle": "启动",
+      "primaryTheme": "机器人",
+      "actionBias": "停止出手",
+      "positionPlan": "空仓",
+      "dataConfidence": null,
+      "guardrailMode": "normal",
+      "hardStop": false,
+      "totalPnlPct": 2.8,
+      "realizedPnlPct": 2.1,
+      "winRate": 0.67,
+      "disciplineScore": 82,
+      "matchedPlanRate": 0.67,
+      "bestSetup": "龙头分歧转一致",
+      "worstSetup": "临时跟随",
+      "regimeKey": "进攻环境 | 启动 | 机器人",
+      "sampleStatus": "closed"
+    }
+  ],
+  "dashboard": {
+    "readiness": {
+      "totalSamples": 3,
+      "closedSamples": 3,
+      "openSamples": 0,
+      "enoughForOptimization": false,
+      "enoughForCrossRegimeComparison": false
+    },
+    "hardStopCount": 0,
+    "environmentPerformance": [
+      {
+        "name": "进攻环境",
+        "sampleCount": 1,
+        "avgPnlPct": 2.8,
+        "avgWinRate": 0.67,
+        "avgMatchedPlanRate": 0.67
+      }
+    ],
+    "themePerformance": [
+      {
+        "name": "机器人",
+        "sampleCount": 1,
+        "avgPnlPct": 2.8,
+        "avgWinRate": 0.67,
+        "avgMatchedPlanRate": 0.67
+      }
+    ],
+    "regimePerformance": [
+      {
+        "name": "进攻环境 | 启动 | 机器人",
+        "sampleCount": 1,
+        "avgPnlPct": 2.8,
+        "avgWinRate": 0.67,
+        "avgMatchedPlanRate": 0.67
+      }
+    ],
+    "warnings": [
+      "闭环样本少于20天，当前统计更适合作为观察，不适合大幅改规则。"
+    ]
+  },
+  "ruleOptimizer": {
+    "generatedAt": "2026-04-12T06:40:17.666Z",
+    "readiness": {
+      "closedTradeGroups": 3,
+      "totalTrades": 3,
+      "enoughTradeSamples": false,
+      "enoughSetupComparison": false,
+      "sampleMilestones": {
+        "observationReady": false,
+        "tuningReady": false,
+        "disableReady": false
+      },
+      "environmentCoverage": {
+        "coveredEnvironments": [
+          "进攻环境"
+        ],
+        "stableEnvironments": [],
+        "detail": [
+          {
+            "name": "进攻环境",
+            "dayCount": 1,
+            "tradeCount": 3,
+            "avgPnlPct": 0.93,
+            "avgWinRate": 0.67,
+            "avgMatchedPlanRate": 0.67
+          }
+        ]
+      }
+    },
+    "setupProfiles": [
+      {
+        "setup": "龙头分歧转一致",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 2.4,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1,
+        "environmentPerformance": [
+          {
+            "name": "进攻环境",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 2.4,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "themePerformance": [
+          {
+            "name": "机器人",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 2.4,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "positionPerformance": [
+          {
+            "name": "未记录",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 2.4,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "entryStylePerformance": [
+          {
+            "name": "Unknown",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 2.4,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "strongEnvironments": [
+          "进攻环境"
+        ],
+        "weakEnvironments": [],
+        "strongThemes": [
+          "机器人"
+        ],
+        "weakThemes": [],
+        "recommendedAction": "观察",
+        "rationale": [
+          "历史样本偏少，暂时不建议据此放大仓位。",
+          "更适合在 进攻环境 中使用。"
+        ]
+      },
+      {
+        "setup": "前排换手板确认",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 1.1,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1,
+        "environmentPerformance": [
+          {
+            "name": "进攻环境",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 1.1,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "themePerformance": [
+          {
+            "name": "机器人",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 1.1,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "positionPerformance": [
+          {
+            "name": "未记录",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 1.1,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "entryStylePerformance": [
+          {
+            "name": "Unknown",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": 1.1,
+            "avgWinRate": 1,
+            "avgMatchedPlanRate": 1
+          }
+        ],
+        "strongEnvironments": [
+          "进攻环境"
+        ],
+        "weakEnvironments": [],
+        "strongThemes": [
+          "机器人"
+        ],
+        "weakThemes": [],
+        "recommendedAction": "观察",
+        "rationale": [
+          "历史样本偏少，暂时不建议据此放大仓位。",
+          "更适合在 进攻环境 中使用。"
+        ]
+      },
+      {
+        "setup": "临时跟随",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": -0.7,
+        "avgWinRate": 0,
+        "avgMatchedPlanRate": 0,
+        "environmentPerformance": [
+          {
+            "name": "进攻环境",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": -0.7,
+            "avgWinRate": 0,
+            "avgMatchedPlanRate": 0
+          }
+        ],
+        "themePerformance": [
+          {
+            "name": "AI应用",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": -0.7,
+            "avgWinRate": 0,
+            "avgMatchedPlanRate": 0
+          }
+        ],
+        "positionPerformance": [
+          {
+            "name": "未记录",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": -0.7,
+            "avgWinRate": 0,
+            "avgMatchedPlanRate": 0
+          }
+        ],
+        "entryStylePerformance": [
+          {
+            "name": "Unknown",
+            "dayCount": 1,
+            "tradeCount": 1,
+            "avgPnlPct": -0.7,
+            "avgWinRate": 0,
+            "avgMatchedPlanRate": 0
+          }
+        ],
+        "strongEnvironments": [],
+        "weakEnvironments": [
+          "进攻环境"
+        ],
+        "strongThemes": [],
+        "weakThemes": [
+          "AI应用"
+        ],
+        "recommendedAction": "观察",
+        "rationale": [
+          "历史样本偏少，暂时不建议据此放大仓位。",
+          "历史平均收益为负，说明这个买点当前没有体现正向边际。",
+          "胜率偏低，容易在情绪切换期拖累整体节奏。",
+          "计划匹配率偏低，说明该买点容易和盘前计划脱节。",
+          "在 进攻环境 中表现较弱，需收紧触发条件。"
+        ]
+      }
+    ],
+    "positiveEdges": [
+      {
+        "label": "龙头分歧转一致 | 进攻环境",
+        "setup": "龙头分歧转一致",
+        "context": "进攻环境",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 2.4,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "前排换手板确认 | 进攻环境",
+        "setup": "前排换手板确认",
+        "context": "进攻环境",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 1.1,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      }
+    ],
+    "negativeEdges": [
+      {
+        "label": "临时跟随 | 进攻环境",
+        "setup": "临时跟随",
+        "context": "进攻环境",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": -0.7,
+        "avgWinRate": 0,
+        "avgMatchedPlanRate": 0
+      }
+    ],
+    "setupEnvironmentEdges": [
+      {
+        "label": "龙头分歧转一致 | 进攻环境",
+        "setup": "龙头分歧转一致",
+        "context": "进攻环境",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 2.4,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "前排换手板确认 | 进攻环境",
+        "setup": "前排换手板确认",
+        "context": "进攻环境",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 1.1,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "临时跟随 | 进攻环境",
+        "setup": "临时跟随",
+        "context": "进攻环境",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": -0.7,
+        "avgWinRate": 0,
+        "avgMatchedPlanRate": 0
+      }
+    ],
+    "setupThemeEdges": [
+      {
+        "label": "龙头分歧转一致 | 机器人",
+        "setup": "龙头分歧转一致",
+        "context": "机器人",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 2.4,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "前排换手板确认 | 机器人",
+        "setup": "前排换手板确认",
+        "context": "机器人",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 1.1,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "临时跟随 | AI应用",
+        "setup": "临时跟随",
+        "context": "AI应用",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": -0.7,
+        "avgWinRate": 0,
+        "avgMatchedPlanRate": 0
+      }
+    ],
+    "setupPositionEdges": [
+      {
+        "label": "龙头分歧转一致 | 未记录",
+        "setup": "龙头分歧转一致",
+        "context": "未记录",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 2.4,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "前排换手板确认 | 未记录",
+        "setup": "前排换手板确认",
+        "context": "未记录",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 1.1,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "临时跟随 | 未记录",
+        "setup": "临时跟随",
+        "context": "未记录",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": -0.7,
+        "avgWinRate": 0,
+        "avgMatchedPlanRate": 0
+      }
+    ],
+    "setupEntryStyleEdges": [
+      {
+        "label": "龙头分歧转一致 | Unknown",
+        "setup": "龙头分歧转一致",
+        "context": "Unknown",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 2.4,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "前排换手板确认 | Unknown",
+        "setup": "前排换手板确认",
+        "context": "Unknown",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": 1.1,
+        "avgWinRate": 1,
+        "avgMatchedPlanRate": 1
+      },
+      {
+        "label": "临时跟随 | Unknown",
+        "setup": "临时跟随",
+        "context": "Unknown",
+        "dayCount": 1,
+        "tradeCount": 1,
+        "avgPnlPct": -0.7,
+        "avgWinRate": 0,
+        "avgMatchedPlanRate": 0
+      }
+    ],
+    "ruleActions": {
+      "preserve": [],
+      "tighten": [],
+      "disable": [],
+      "observe": [
+        {
+          "setup": "龙头分歧转一致",
+          "dayCount": 1,
+          "tradeCount": 1,
+          "avgPnlPct": 2.4,
+          "avgWinRate": 1,
+          "avgMatchedPlanRate": 1,
+          "environmentPerformance": [
+            {
+              "name": "进攻环境",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 2.4,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "themePerformance": [
+            {
+              "name": "机器人",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 2.4,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "positionPerformance": [
+            {
+              "name": "未记录",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 2.4,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "entryStylePerformance": [
+            {
+              "name": "Unknown",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 2.4,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "strongEnvironments": [
+            "进攻环境"
+          ],
+          "weakEnvironments": [],
+          "strongThemes": [
+            "机器人"
+          ],
+          "weakThemes": [],
+          "recommendedAction": "观察",
+          "rationale": [
+            "历史样本偏少，暂时不建议据此放大仓位。",
+            "更适合在 进攻环境 中使用。"
+          ]
+        },
+        {
+          "setup": "前排换手板确认",
+          "dayCount": 1,
+          "tradeCount": 1,
+          "avgPnlPct": 1.1,
+          "avgWinRate": 1,
+          "avgMatchedPlanRate": 1,
+          "environmentPerformance": [
+            {
+              "name": "进攻环境",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 1.1,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "themePerformance": [
+            {
+              "name": "机器人",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 1.1,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "positionPerformance": [
+            {
+              "name": "未记录",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 1.1,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "entryStylePerformance": [
+            {
+              "name": "Unknown",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": 1.1,
+              "avgWinRate": 1,
+              "avgMatchedPlanRate": 1
+            }
+          ],
+          "strongEnvironments": [
+            "进攻环境"
+          ],
+          "weakEnvironments": [],
+          "strongThemes": [
+            "机器人"
+          ],
+          "weakThemes": [],
+          "recommendedAction": "观察",
+          "rationale": [
+            "历史样本偏少，暂时不建议据此放大仓位。",
+            "更适合在 进攻环境 中使用。"
+          ]
+        },
+        {
+          "setup": "临时跟随",
+          "dayCount": 1,
+          "tradeCount": 1,
+          "avgPnlPct": -0.7,
+          "avgWinRate": 0,
+          "avgMatchedPlanRate": 0,
+          "environmentPerformance": [
+            {
+              "name": "进攻环境",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": -0.7,
+              "avgWinRate": 0,
+              "avgMatchedPlanRate": 0
+            }
+          ],
+          "themePerformance": [
+            {
+              "name": "AI应用",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": -0.7,
+              "avgWinRate": 0,
+              "avgMatchedPlanRate": 0
+            }
+          ],
+          "positionPerformance": [
+            {
+              "name": "未记录",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": -0.7,
+              "avgWinRate": 0,
+              "avgMatchedPlanRate": 0
+            }
+          ],
+          "entryStylePerformance": [
+            {
+              "name": "Unknown",
+              "dayCount": 1,
+              "tradeCount": 1,
+              "avgPnlPct": -0.7,
+              "avgWinRate": 0,
+              "avgMatchedPlanRate": 0
+            }
+          ],
+          "strongEnvironments": [],
+          "weakEnvironments": [
+            "进攻环境"
+          ],
+          "strongThemes": [],
+          "weakThemes": [
+            "AI应用"
+          ],
+          "recommendedAction": "观察",
+          "rationale": [
+            "历史样本偏少，暂时不建议据此放大仓位。",
+            "历史平均收益为负，说明这个买点当前没有体现正向边际。",
+            "胜率偏低，容易在情绪切换期拖累整体节奏。",
+            "计划匹配率偏低，说明该买点容易和盘前计划脱节。",
+            "在 进攻环境 中表现较弱，需收紧触发条件。"
+          ]
+        }
+      ]
+    },
+    "recommendations": [
+      "闭环交易样本仍偏少，当前规则优化更适合作为观察清单，不适合一次性大改交易体系。",
+      "以下买点样本仍不足，先继续跟踪: 龙头分歧转一致、前排换手板确认、临时跟随。"
+    ]
+  },
+  "recommendations": [
+    "闭环样本少于20天，当前统计更适合作为观察，不适合大幅改规则。",
+    "闭环交易样本仍偏少，当前规则优化更适合作为观察清单，不适合一次性大改交易体系。",
+    "以下买点样本仍不足，先继续跟踪: 龙头分歧转一致、前排换手板确认、临时跟随。"
+  ]
+}

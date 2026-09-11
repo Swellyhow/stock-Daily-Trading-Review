@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>密钥管理</title>
+  <style>
+    :root { --bg:#f5f7fa; --surface:#fff; --soft:#f8fafc; --text:#101828; --muted:#667085; --line:#e4e7ec; --primary:#1677ff; --primary-soft:#eff6ff; --success:#16a34a; --danger:#d92d20; --warning:#b54708; }
+    * { box-sizing:border-box; }
+    html,body { margin:0; min-height:100%; color:var(--text); background:var(--bg); font-family:"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; }
+    body { min-width:320px; }
+    .topbar { height:60px; display:flex; align-items:center; justify-content:space-between; gap:20px; padding:0 24px; color:#fff; background:#162033; }
+    .brand { display:flex; align-items:center; gap:10px; white-space:nowrap; }
+    .brand-mark { display:grid; place-items:center; width:32px; height:32px; border-radius:5px; color:#fff; background:var(--primary); font-weight:800; }
+    h1 { margin:0; font-size:18px; }
+    .topnav { display:flex; gap:20px; overflow:auto; }
+    .topnav a { color:#d0d5dd; text-decoration:none; font-size:13px; white-space:nowrap; }
+    .topnav a:hover,.topnav a.active { color:#fff; }
+    main { max-width:1120px; margin:0 auto; padding:28px 24px 44px; }
+    .page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:22px; }
+    .page-head h2 { margin:0 0 6px; font-size:24px; }
+    .page-head p { margin:0; color:var(--muted); font-size:13px; }
+    .status-line { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; white-space:nowrap; }
+    .dot { width:8px; height:8px; border-radius:50%; background:#98a2b3; }
+    .dot.ok { background:var(--success); }
+    .dot.warn { background:#f79009; }
+    .panel { margin-bottom:16px; border:1px solid var(--line); border-radius:8px; background:var(--surface); box-shadow:0 1px 2px rgba(16,24,40,.04); }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 18px; border-bottom:1px solid var(--line); }
+    .panel-head h3 { margin:0; font-size:15px; }
+    .panel-head span { color:var(--muted); font-size:12px; }
+    .panel-body { padding:18px; }
+    .field-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 20px; }
+    .field { display:grid; gap:7px; }
+    .field label { display:flex; justify-content:space-between; gap:8px; color:#344054; font-size:12px; font-weight:600; }
+    .field label small { color:var(--muted); font-weight:400; }
+    .field input { width:100%; height:38px; padding:0 11px; border:1px solid #d0d5dd; border-radius:5px; color:var(--text); background:#fff; outline:none; font-size:13px; }
+    .field input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(22,119,255,.12); }
+    .field input[readonly] { color:#667085; background:var(--soft); }
+    .field-wide { grid-column:1/-1; }
+    .field-note { margin:0; color:var(--muted); font-size:11px; line-height:1.5; }
+    .actions { display:flex; align-items:center; justify-content:flex-end; gap:8px; margin-top:18px; }
+    button { min-height:32px; padding:0 12px; border:1px solid #d0d5dd; border-radius:5px; color:#344054; background:#fff; cursor:pointer; font-size:12px; font-weight:600; }
+    button:hover { border-color:var(--primary); color:var(--primary); }
+    button.primary { border-color:var(--primary); color:#fff; background:var(--primary); }
+    button.danger { color:var(--danger); }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    .provider-state { display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border:1px solid #d0d5dd; border-radius:12px; color:var(--muted); background:var(--soft); font-size:11px; font-weight:600; }
+    .provider-state.ready { border-color:#abefc6; color:#067647; background:#ecfdf3; }
+    .provider-state.error { border-color:#fecdca; color:#b42318; background:#fef3f2; }
+    .message { min-height:18px; margin-top:12px; color:var(--muted); font-size:12px; }
+    .message.success { color:#067647; }
+    .message.error { color:#b42318; }
+    .security { display:flex; gap:10px; align-items:flex-start; padding:12px 14px; border:1px solid #b2ddff; border-radius:6px; color:#175cd3; background:var(--primary-soft); font-size:12px; line-height:1.6; }
+    .security strong { color:#1849a9; }
+    @media (max-width:720px) { .topbar { height:auto; min-height:60px; align-items:flex-start; flex-direction:column; padding:14px 16px; } .topnav { width:100%; gap:16px; } main { padding:20px 14px 32px; } .page-head { flex-direction:column; gap:10px; } .field-grid { grid-template-columns:1fr; } .field-wide { grid-column:auto; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">钥</div><h1>密钥管理</h1></div>
+    <nav class="topnav">
+<a href="./auction-monitor.html">竞价监控</a><a href="./market-management.html">市场管理</a><a href="./limit-up-ladder.html">连板天梯</a><a href="./custom-sector-tracker.html">板块自定义追踪</a><a href="./data-viewer.html">市场数据</a><a class="active" href="./key-management.html">密钥管理</a>
+    </nav>
+  </header>
+  <main>
+    <section class="page-head">
+      <div><h2>连接配置</h2><p>管理本机数据源和模型连接参数。</p></div>
+      <div class="status-line"><span id="overallDot" class="dot"></span><span id="overallStatus">正在读取配置</span></div>
+    </section>
+    <div class="security"><strong>本机保护</strong><span>此页面的接口仅接受本机访问。完整密钥不会回显，保存后只显示掩码。</span></div>
+    <section class="panel">
+      <div class="panel-head"><div><h3>硅基流动</h3><span>复盘图片识别和模型服务</span></div><span id="siliconState" class="provider-state">未检查</span></div>
+      <div class="panel-body"><div class="field-grid">
+        <div class="field"><label for="HOT_MONEY_SILICONFLOW_API_KEY">硅基流动 API Key（项目） <small id="HOT_MONEY_SILICONFLOW_API_KEY_state"></small></label><input id="HOT_MONEY_SILICONFLOW_API_KEY" type="password" autocomplete="new-password" placeholder="输入新 Key；留空表示不修改"></div>
+        <div class="field"><label for="SILICONFLOW_API_KEY">硅基流动 API Key（兼容） <small id="SILICONFLOW_API_KEY_state"></small></label><input id="SILICONFLOW_API_KEY" type="password" autocomplete="new-password" placeholder="输入新 Key；留空表示不修改"></div>
+        <div class="field"><label for="SILICONFLOW_REVIEW_MODEL_OVERRIDE">复盘识别模型</label><input id="SILICONFLOW_REVIEW_MODEL_OVERRIDE" type="text" autocomplete="off"></div>
+        <div class="field"><label for="SILICONFLOW_REVIEW_MODEL">复盘模型（默认）</label><input id="SILICONFLOW_REVIEW_MODEL" type="text" autocomplete="off"></div>
+        <div class="field"><label for="SILICONFLOW_MODEL_PRIMARY">主模型</label><input id="SILICONFLOW_MODEL_PRIMARY" type="text" autocomplete="off"></div>
+        <div class="field"><label for="SILICONFLOW_MODEL_BACKUP">备用模型</label><input id="SILICONFLOW_MODEL_BACKUP" type="text" autocomplete="off"></div>
+        <div class="field"><label for="SILICONFLOW_BASE_URL">服务地址</label><input id="SILICONFLOW_BASE_URL" type="url" autocomplete="off"></div>
+        <div class="field"><label for="SILICONFLOW_REVIEW_TIMEOUT_MS">复盘超时（毫秒）</label><input id="SILICONFLOW_REVIEW_TIMEOUT_MS" type="number" min="30000" step="1000" autocomplete="off"></div>
+        <div class="field"><label for="SILICONFLOW_REVIEW_MAX_TOKENS">复盘最大输出 Token</label><input id="SILICONFLOW_REVIEW_MAX_TOKENS" type="number" min="12000" step="1000" autocomplete="off"></div>
+      </div><div class="actions"><button data-clear="silicon">清除 Key</button><button data-test="siliconflow">测试连接</button><button class="primary" data-save="silicon">保存硅基流动</button></div><div id="siliconMessage" class="message"></div></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><h3>通用 LLM 兼容接口</h3><span>策略解释等通用模型调用</span></div><span id="llmState" class="provider-state">未检查</span></div>
+      <div class="panel-body"><div class="field-grid">
+        <div class="field"><label for="LLM_API_KEY">通用 LLM API Key <small id="LLM_API_KEY_state"></small></label><input id="LLM_API_KEY" type="password" autocomplete="new-password" placeholder="输入新 Key；留空表示不修改"></div>
+        <div class="field"><label for="OPENAI_API_KEY">OpenAI API Key（兼容） <small id="OPENAI_API_KEY_state"></small></label><input id="OPENAI_API_KEY" type="password" autocomplete="new-password" placeholder="输入新 Key；留空表示不修改"></div>
+        <div class="field"><label for="TIANAPI_KEY">天行数据 API Key（兼容） <small id="TIANAPI_KEY_state"></small></label><input id="TIANAPI_KEY" type="password" autocomplete="new-password" placeholder="输入新 Key；留空表示不修改"></div>
+      </div><div class="actions"><button data-clear="llm">清除密钥</button><button class="primary" data-save="llm">保存通用 LLM 配置</button></div><div id="llmMessage" class="message"></div></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><h3>CMES VIP 实时数据</h3><span>实时五档、分钟和分笔 Tick</span></div><span id="cmesState" class="provider-state">未检查</span></div>
+      <div class="panel-body"><div class="field-grid">
+        <div class="field"><label for="CMES_TOKEN">CMES VIP Token <small id="CMES_TOKEN_state"></small></label><input id="CMES_TOKEN" type="password" autocomplete="new-password" placeholder="输入 Token；留空表示不修改"><p class="field-note">支持管理项目配置和 stockdb 桥接配置的 Token，保存后不会回显完整内容。</p></div>
+        <div class="field"><label for="CMES_TIMEOUT_MS">请求超时（毫秒）</label><input id="CMES_TIMEOUT_MS" type="number" min="1000" step="1000" autocomplete="off"></div>
+        <div class="field field-wide"><label for="CMES_BRIDGE_URL">本地桥接地址</label><input id="CMES_BRIDGE_URL" type="url" autocomplete="off"></div>
+      </div><div class="actions"><button data-clear="cmes">清除 Token</button><button data-test="cmes">测试连接</button><button class="primary" data-save="cmes">保存 CMES 配置</button></div><div id="cmesMessage" class="message"></div></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><h3>妙想数据源</h3><span>实时竞价、分时和行情增强</span></div><span id="miaoxiangState" class="provider-state">未检查</span></div>
+      <div class="panel-body"><div class="field-grid">
+        <div class="field"><label for="MX_APIKEY">妙想 API Key <small id="MX_APIKEY_state"></small></label><input id="MX_APIKEY" type="password" autocomplete="new-password" placeholder="输入新 Key；留空表示不修改"></div>
+        <div class="field"><label for="MX_API_URL">妙想服务地址</label><input id="MX_API_URL" type="url" autocomplete="off"></div>
+      </div><div class="actions"><button data-clear="miaoxiang">清除密钥</button><button class="primary" data-save="miaoxiang">保存妙想配置</button></div><div id="miaoxiangMessage" class="message"></div></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><h3>iFinD 数据源</h3><span>个股和指数数据接口</span></div><span id="ifindState" class="provider-state">未检查</span></div>
+      <div class="panel-body"><div class="field-grid">
+        <div class="field"><label for="IFIND_MCP_TOKEN">iFinD Token <small id="IFIND_MCP_TOKEN_state"></small></label><input id="IFIND_MCP_TOKEN" type="password" autocomplete="new-password" placeholder="输入新 Token；留空表示不修改"></div>
+        <div class="field"><label for="IFIND_MCP_KEY">iFinD Token（兼容） <small id="IFIND_MCP_KEY_state"></small></label><input id="IFIND_MCP_KEY" type="password" autocomplete="new-password" placeholder="输入新 Token；留空表示不修改"></div>
+        <div class="field"><label for="IFIND_API_KEY">iFinD API Key（兼容） <small id="IFIND_API_KEY_state"></small></label><input id="IFIND_API_KEY" type="password" autocomplete="new-password" placeholder="输入新 Key；留空表示不修改"></div>
+        <div class="field"><label for="IFIND_MCP_TIMEOUT_MS">iFinD 超时（毫秒）</label><input id="IFIND_MCP_TIMEOUT_MS" type="number" min="1000" step="1000" autocomplete="off"></div>
+        <div class="field field-wide"><label for="IFIND_MCP_URL">iFinD 股票服务地址</label><input id="IFIND_MCP_URL" type="url" autocomplete="off"></div>
+        <div class="field field-wide"><label for="IFIND_INDEX_MCP_URL">iFinD 指数服务地址</label><input id="IFIND_INDEX_MCP_URL" type="url" autocomplete="off"></div>
+      </div><div class="actions"><button data-clear="ifind">清除密钥</button><button class="primary" data-save="ifind">保存 iFinD 配置</button></div><div id="ifindMessage" class="message"></div></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><h3>stockdb 数据库</h3><span>本地行情和分钟线保留策略</span></div><span id="stockdbState" class="provider-state">未检查</span></div>
+      <div class="panel-body"><div class="field-grid">
+        <div class="field"><label for="STOCKDB_URL">stockdb 地址</label><input id="STOCKDB_URL" type="url" autocomplete="off"></div>
+        <div class="field"><label for="STOCKDB_PYTHON">Python 命令</label><input id="STOCKDB_PYTHON" type="text" autocomplete="off"></div>
+        <div class="field field-wide"><label for="STOCKDB_ROOT">stockdb 根目录</label><input id="STOCKDB_ROOT" type="text" autocomplete="off"></div>
+        <div class="field field-wide"><label for="STOCKDB_CONCEPT_PATH">概念文件路径</label><input id="STOCKDB_CONCEPT_PATH" type="text" autocomplete="off"></div>
+        <div class="field field-wide"><label for="STOCKDB_PYTHONPATH">Python 路径</label><input id="STOCKDB_PYTHONPATH" type="text" autocomplete="off"></div>
+        <div class="field"><label for="STOCKDB_MINUTE_RETENTION_DAYS">分钟线保留天数</label><input id="STOCKDB_MINUTE_RETENTION_DAYS" type="number" min="1" step="1" autocomplete="off"></div>
+      </div><div class="actions"><button class="primary" data-save="stockdb">保存 stockdb 配置</button></div><div id="stockdbMessage" class="message"></div></div>
+    </section>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const state = { items: [] };
+    const groups = { silicon: ["HOT_MONEY_SILICONFLOW_API_KEY", "SILICONFLOW_API_KEY", "SILICONFLOW_REVIEW_MODEL_OVERRIDE", "SILICONFLOW_REVIEW_MODEL", "SILICONFLOW_MODEL_PRIMARY", "SILICONFLOW_MODEL_BACKUP", "SILICONFLOW_BASE_URL", "SILICONFLOW_REVIEW_TIMEOUT_MS", "SILICONFLOW_REVIEW_MAX_TOKENS"], llm: ["LLM_API_KEY", "OPENAI_API_KEY", "TIANAPI_KEY"], miaoxiang: ["MX_APIKEY", "MX_API_URL"], ifind: ["IFIND_MCP_TOKEN", "IFIND_MCP_KEY", "IFIND_API_KEY", "IFIND_MCP_URL", "IFIND_INDEX_MCP_URL", "IFIND_MCP_TIMEOUT_MS"], stockdb: ["STOCKDB_URL", "STOCKDB_ROOT", "STOCKDB_CONCEPT_PATH", "STOCKDB_PYTHON", "STOCKDB_PYTHONPATH", "STOCKDB_MINUTE_RETENTION_DAYS"], cmes: ["CMES_TOKEN", "CMES_BRIDGE_URL", "CMES_TIMEOUT_MS"] };
+    const secretKeys = new Set(["HOT_MONEY_SILICONFLOW_API_KEY", "SILICONFLOW_API_KEY", "LLM_API_KEY", "OPENAI_API_KEY", "TIANAPI_KEY", "MX_APIKEY", "IFIND_MCP_TOKEN", "IFIND_MCP_KEY", "IFIND_API_KEY", "CMES_TOKEN"]);
+    function setMessage(group, text, type = "") { const node = $(group + "Message"); node.textContent = text; node.className = "message " + type; }
+    function render(items) {
+      state.items = items || [];
+      let ready = 0;
+      for (const item of state.items) {
+        const input = $(item.key); if (!input) continue;
+        if (secretKeys.has(item.key)) { $(item.key + "_state").textContent = item.configured ? item.masked : "未配置"; }
+        else input.value = item.value || "";
+        if (item.configured) ready += 1;
+      }
+      $("overallDot").className = "dot " + (ready ? "ok" : "warn"); $("overallStatus").textContent = ready ? `${ready} 项配置已就绪` : "尚未配置连接参数";
+      for (const [group, keys] of Object.entries(groups)) { const configured = keys.filter((key) => state.items.find((item) => item.key === key)?.configured).length; const node = $(`${group}State`); if (!node) continue; node.className = "provider-state " + (configured ? "ready" : ""); node.textContent = `${configured}/${keys.length} 项已配置`; }
+    }
+    async function load() { try { const r = await fetch("/api/key-management/status"); const body = await r.json(); if (!r.ok || !body.ok) throw new Error(body.error || "读取失败"); render(body.items); if (body.cmesBridge?.tokenConfigured) { const node = $("cmesState"); node.className = "provider-state " + (body.cmesBridge.loggedIn ? "ready" : "error"); node.textContent = body.cmesBridge.loggedIn ? "连接正常" : "Token 已配置，待授权"; } } catch (error) { $("overallStatus").textContent = error.message; $("overallDot").className = "dot warn"; } }
+    async function save(group) {
+      const values = {}; for (const key of groups[group]) { const input = $(key); if (!input) continue; if (secretKeys.has(key) && !input.value.trim()) continue; values[key] = input.value.trim(); }
+      if (!Object.keys(values).length) { setMessage(group, "没有需要保存的内容", "error"); return; }
+      const button = document.querySelector(`[data-save="${group}"]`); button.disabled = true; setMessage(group, "正在保存…");
+      try { const r = await fetch("/api/key-management/config", { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({values}) }); const body = await r.json(); if (!r.ok || !body.ok) throw new Error(body.error || "保存失败"); render(body.items); await load(); for (const key of groups[group]) if (secretKeys.has(key)) $(key).value = ""; setMessage(group, "配置已保存", "success"); } catch (error) { setMessage(group, error.message, "error"); } finally { button.disabled = false; }
+    }
+    async function clearSecrets(group) { const keys = groups[group].filter((key) => secretKeys.has(key)); if (!confirm("确认清除本组密钥？")) return; const button = document.querySelector(`[data-clear="${group}"]`); button.disabled = true; try { const values = Object.fromEntries(keys.map((key) => [key, ""])); const r = await fetch("/api/key-management/config", { method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify({values}) }); const body = await r.json(); if (!r.ok || !body.ok) throw new Error(body.error || "清除失败"); render(body.items); await load(); setMessage(group, "密钥已清除", "success"); } catch (error) { setMessage(group, error.message, "error"); } finally { button.disabled = false; } }
+    async function test(provider) { const button = document.querySelector(`[data-test="${provider}"]`); button.disabled = true; const group = provider === "cmes" ? "cmes" : "silicon"; setMessage(group, "正在测试连接…"); try { const r = await fetch(provider === "cmes" ? "/api/cmes/status" : "/api/key-management/test", { method:provider === "cmes" ? "GET" : "POST", headers:{"Content-Type":"application/json"}, body:provider === "cmes" ? undefined : JSON.stringify({provider}) }); const body = await r.json(); if (!r.ok || !body.ok) throw new Error(body.error || "连接失败"); setMessage(group, provider === "cmes" ? "CMES 桥接服务连接正常" : body.message, "success"); const node = $(provider === "cmes" ? "cmesState" : "siliconState"); node.className = "provider-state ready"; node.textContent = "连接正常"; } catch (error) { setMessage(group, error.message, "error"); $(provider === "cmes" ? "cmesState" : "siliconState").className = "provider-state error"; } finally { button.disabled = false; } }
+    document.querySelectorAll("[data-save]").forEach((button) => button.onclick = () => save(button.dataset.save));
+    document.querySelectorAll("[data-clear]").forEach((button) => button.onclick = () => clearSecrets(button.dataset.clear));
+    document.querySelectorAll("[data-test]").forEach((button) => button.onclick = () => test(button.dataset.test));
+    load();
+  </script>
+</body>
+</html>

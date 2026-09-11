@@ -1,0 +1,65 @@
+﻿{
+  "date": "2026-03-31",
+  "summary": {
+    "totalPnlPct": 2.8,
+    "realizedPnlPct": 2.1,
+    "maxDrawdownPct": -0.9,
+    "winRate": 0.67,
+    "tradeCount": 3,
+    "disciplineScore": 82,
+    "notes": "Mainline trades worked well. One off-plan attempt was weak."
+  },
+  "trades": [
+    {
+      "symbol": "机器人龙头A",
+      "theme": "机器人",
+      "setup": "龙头分歧转一致",
+      "plannedSetup": "龙头分歧转一致",
+      "plannedTheme": "机器人",
+      "pnlPct": 2.4,
+      "result": "win",
+      "matchedPlan": true,
+      "positionPct": 28,
+      "holdingDays": 2,
+      "entryStyle": "回封",
+      "exitReason": "分时走弱止盈",
+      "entryConfidence": 0.84,
+      "tags": ["龙头", "分歧转一致"],
+      "notes": "Leader stayed ahead of sector."
+    },
+    {
+      "symbol": "机器人核心B",
+      "theme": "机器人",
+      "setup": "前排换手板确认",
+      "plannedSetup": "前排换手板确认",
+      "plannedTheme": "机器人",
+      "pnlPct": 1.1,
+      "result": "win",
+      "matchedPlan": true,
+      "positionPct": 18,
+      "holdingDays": 1,
+      "entryStyle": "打板",
+      "exitReason": "次日冲高兑现",
+      "entryConfidence": 0.76,
+      "tags": ["前排", "换手"],
+      "notes": "Good follow-through."
+    },
+    {
+      "symbol": "AI核心C",
+      "theme": "AI应用",
+      "setup": "临时跟随",
+      "plannedSetup": "空",
+      "plannedTheme": "机器人",
+      "pnlPct": -0.7,
+      "result": "loss",
+      "matchedPlan": false,
+      "positionPct": 12,
+      "holdingDays": 1,
+      "entryStyle": "半路",
+      "exitReason": "主线不符止损",
+      "entryConfidence": 0.42,
+      "tags": ["跟随", "偏离计划"],
+      "notes": "Not strong enough versus mainline."
+    }
+  ]
+}

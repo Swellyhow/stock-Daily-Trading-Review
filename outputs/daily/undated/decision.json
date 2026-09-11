@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "date": "undated",
+    "generatedAt": "2026-03-31T06:21:50.425Z"
+  },
+  "overview": {
+    "environment": "冰点/恐慌",
+    "emotionCycle": "冰点",
+    "primaryTheme": "No clear mainline",
+    "actionBias": "防守观察",
+    "positionPlan": "空仓"
+  },
+  "environment": {
+    "score": 20,
+    "label": "冰点/恐慌",
+    "canAttack": false,
+    "reasoning": [
+      "涨停0家，跌停0家",
+      "连板高度0板，主线集中度0",
+      "炸板率0，昨日强股反馈0"
+    ]
+  },
+  "emotionCycle": {
+    "label": "冰点",
+    "reasoning": [
+      "环境分20",
+      "昨日强股反馈0",
+      "高位负反馈0"
+    ]
+  },
+  "themes": {
+    "ranked": [],
+    "primaryTheme": null,
+    "secondaryTheme": null,
+    "summary": "暂未识别出满足阈值的明确主线"
+  },
+  "leaders": {
+    "leader": null,
+    "corePool": [],
+    "riskyNames": []
+  },
+  "execution": {
+    "actionBias": "防守观察",
+    "allowedSetups": [],
+    "forbiddenSetups": [
+      "追后排跟风",
+      "情绪退潮中的中位接力",
+      "追一致加速板",
+      "临时起意打板",
+      "非主线套利单"
+    ],
+    "notes": [
+      "主线：未识别",
+      "龙头：未识别",
+      "情绪阶段：冰点"
+    ]
+  },
+  "position": {
+    "totalPosition": "空仓",
+    "structure": {
+      "leaderCore": 0,
+      "secondaryCore": 0,
+      "trial": 0
+    },
+    "retreatSignals": [
+      "龙头竞价严重低于预期",
+      "高位股批量负反馈",
+      "主线不回流",
+      "核心股炸板无法回封"
+    ],
+    "addSignals": [
+      "龙头超预期",
+      "板块联动加强",
+      "前排晋级顺畅",
+      "赚钱效应扩散"
+    ]
+  }
+}

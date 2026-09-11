@@ -1,0 +1,15 @@
+Date: undated
+Environment: 冰点/恐慌
+Emotion Cycle: 冰点
+Primary Theme: No clear mainline
+Action Bias: 防守观察
+Position Plan: 空仓
+
+Environment Basis: 涨停0家，跌停0家 | 连板高度0板，主线集中度0 | 炸板率0，昨日强股反馈0
+Emotion Basis: 环境分20 | 昨日强股反馈0 | 高位负反馈0
+Theme Summary: 暂未识别出满足阈值的明确主线
+Leader: Unidentified
+Core Pool: None
+Risky Names: None
+Allowed Setups: None
+Forbidden Setups: 追后排跟风, 情绪退潮中的中位接力, 追一致加速板, 临时起意打板, 非主线套利单

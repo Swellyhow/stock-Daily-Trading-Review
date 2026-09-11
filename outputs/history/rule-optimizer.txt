@@ -1,0 +1,23 @@
+﻿Closed Trade Groups: 3
+Total Trades: 3
+Enough Trade Samples: No
+Milestones: ??No / ??No / ??No
+Stable Environments: None
+Enough Setup Comparison: No
+Rule Actions: 保留 0 / 收紧 0 / 禁用 0 / 观察 3
+
+Top Setup Actions:
+- 龙头分歧转一致: 观察, avg 2.4%, win 100%, matched 100%
+- 前排换手板确认: 观察, avg 1.1%, win 100%, matched 100%
+- 临时跟随: 观察, avg -0.7%, win 0%, matched 0%
+
+Positive Edges:
+- 龙头分歧转一致 | 进攻环境: avg 2.4%, win 100%
+- 前排换手板确认 | 进攻环境: avg 1.1%, win 100%
+
+Negative Edges:
+- 临时跟随 | 进攻环境: avg -0.7%, win 0%
+
+Recommendations:
+- 闭环交易样本仍偏少，当前规则优化更适合作为观察清单，不适合一次性大改交易体系。
+- 以下买点样本仍不足，先继续跟踪: 龙头分歧转一致、前排换手板确认、临时跟随。
