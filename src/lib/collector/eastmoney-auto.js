@@ -109,6 +109,7 @@ async function fetchPool(baseUrl, date, sort) {
 }
 
 function normalizeLimitUpPoolItem(item) {
+  const rawBoardCount = Number(item.lbc);
   return {
     code: item.c,
     name: item.n,
@@ -116,7 +117,8 @@ function normalizeLimitUpPoolItem(item) {
     changePct: Number(item.zdp ?? 0),
     amount: Number(item.amount ?? item.a ?? 0),
     turnoverPct: Number(item.hs ?? 0),
-    boardCount: Number(item.lbc ?? 0),
+    boardCount: Number.isFinite(rawBoardCount) && rawBoardCount > 0 ? rawBoardCount : null,
+    boardCountSource: "eastmoney-lbc",
     firstLimitTime: item.fbt ?? null,
     lastLimitTime: item.lbt ?? null,
     sealAmount: Number(item.fund ?? 0),

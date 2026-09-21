@@ -15,6 +15,28 @@ import { fetchEastmoneyDetailedLimitUpPool } from './eastmoney-auto.js';
 import { fetchThsLimitUpPool } from './ths-auto.js';
 import { fetchStockDbKline, readStockDbLimitUp, writeStockDbLimitUp, writeStockDbAuction } from './stockdb-client.js';
 
+export function mergePostmarketLimitUpItem(item, detail, previous = {}) {
+  const row = {
+    ...previous,
+    ...(detail || {}),
+    code: item.code,
+    name: item.name,
+    limitReason: item.limitReason,
+    highDays: item.highDays ?? null,
+    highDaysDays: item.highDaysDays ?? null,
+    highDaysTotal: item.highDaysTotal ?? item.periodBoardCount ?? null,
+    periodBoardCount: item.periodBoardCount ?? item.highDaysTotal ?? null,
+    // THS highDays is a rolling N-day/M-board statistic (for example,
+    // "8天5板"), not the current consecutive streak. Eastmoney lbc is the
+    // authoritative boardCount for the detailed row.
+    boardCount: detail?.boardCount ?? null,
+    boardCountSource: detail?.boardCount != null ? 'eastmoney-lbc' : 'unavailable',
+    firstLimitTime: item.firstLimitTime ?? detail?.firstLimitTime ?? null,
+    lastLimitTime: item.lastLimitTime ?? detail?.lastLimitTime ?? null
+  };
+  return row;
+}
+
 export async function syncPostmarketPool(date) {
   const requestedDate = String(date || '').replaceAll('-', '');
   if (!/^\d{8}$/.test(requestedDate)) return { success: false, error: 'Invalid trade date' };
@@ -26,14 +48,11 @@ export async function syncPostmarketPool(date) {
     const details = await fetchEastmoneyDetailedLimitUpPool(requestedDate);
     const detailedByCode = new Map(details.map((row) => [String(row.code), row]));
     const previous = new Map((await readStockDbLimitUp(requestedDate)).map((row) => [String(row.code), row]));
-    const rows = official.items.map((item) => ({
-      ...(previous.get(item.code) || {}),
-      ...(detailedByCode.get(item.code) || {}),
-      code: item.code, name: item.name, limitReason: item.limitReason,
-      boardCount: item.highDaysValue ?? detailedByCode.get(item.code)?.boardCount ?? null,
-      firstLimitTime: item.firstLimitTime ?? detailedByCode.get(item.code)?.firstLimitTime ?? null,
-      lastLimitTime: item.lastLimitTime ?? detailedByCode.get(item.code)?.lastLimitTime ?? null
-    }));
+    const rows = official.items.map((item) => mergePostmarketLimitUpItem(
+      item,
+      detailedByCode.get(item.code),
+      previous.get(item.code)
+    ));
     await writeStockDbLimitUp(rows, { date: requestedDate, source: 'ths-membership/eastmoney-details', kind: 'detailed', replace: true });
     const missingDetails = official.items.filter((item) => !detailedByCode.has(item.code)).map((item) => item.code);
     const success = missingDetails.length === 0;

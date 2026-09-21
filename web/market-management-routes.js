@@ -786,12 +786,18 @@ router.get("/api/market-management/limit-up-ladder", async (req, res) => {
       const storedTimes = items.map((item) => Date.parse(item.storedAt || "")).filter(Number.isFinite);
       const savedBeforeOpen = date === shanghaiDateKey() && storedTimes.length > 0 && Math.max(...storedTimes) < marketOpen;
       const missingDetails = [...officialByCode.keys()].some((code) => !detailsByCode.has(code));
-      if (forceRefresh(req) || savedBeforeOpen || missingDetails) {
+      // Invalidate legacy snapshots written before boardCountSource was
+      // introduced. They may contain THS "N天M板" totals mislabeled as streaks.
+      const hasUnverifiedBoardCounts = [...detailsByCode.values()].some((item) =>
+        item.boardCount != null && item.boardCountSource !== "eastmoney-lbc"
+      );
+      if (forceRefresh(req) || savedBeforeOpen || missingDetails || hasUnverifiedBoardCounts) {
         const refreshed = await fetchEastmoneyDetailedLimitUpPool(date);
-        detailsByCode = new Map(refreshed.map((item) => [String(item.code), item]));
-        items = refreshed;
+        const verified = refreshed.map((item) => ({ ...item, boardCountSource: "eastmoney-lbc" }));
+        detailsByCode = new Map(verified.map((item) => [String(item.code), item]));
+        items = verified;
         poolSource = "东方财富涨停池明细";
-        await writeStockDbLimitUp(refreshed, { date, source: "eastmoney", kind: "detailed", replace: true }).catch((error) => {
+        await writeStockDbLimitUp(verified, { date, source: "eastmoney", kind: "detailed", replace: true }).catch((error) => {
           console.error(`[涨停天梯] stockdb 私有存储替换失败 ${date}:`, error.message);
         });
       }
@@ -799,7 +805,9 @@ router.get("/api/market-management/limit-up-ladder", async (req, res) => {
         ...(detailsByCode.get(code) || {}),
         code,
         name: detailsByCode.get(code)?.name || entry.name,
-        boardCount: detailsByCode.get(code)?.boardCount ?? entry.highDaysValue ?? 0,
+        // Never fall back to THS highDaysValue: "8天5板" is not 5连板.
+        boardCount: detailsByCode.get(code)?.boardCount ?? null,
+        boardCountSource: detailsByCode.get(code)?.boardCount != null ? "eastmoney-lbc" : "unavailable",
         firstLimitTime: detailsByCode.get(code)?.firstLimitTime ?? entry.firstLimitTime,
         lastLimitTime: detailsByCode.get(code)?.lastLimitTime ?? entry.lastLimitTime,
         // Keep the THS pool tag and the review article's detailed explanation

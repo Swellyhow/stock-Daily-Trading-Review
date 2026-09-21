@@ -1,4 +1,5 @@
 import { fetchThsConceptBoardList, fetchThsLimitUpPool } from "./ths-auto.js";
+import { fetchEastmoneyDetailedLimitUpPool } from "./eastmoney-auto.js";
 import { fetchStockDbConceptStocks, readStockDbAuction, readStockDbLimitUpReasons } from "./stockdb-client.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -192,21 +193,31 @@ async function applyBoardStatus(rows) {
     const previousPool = await fetchThsLimitUpPool({ limit: 1000, date: previousTradeDate(referenceDate), ttlMs: 24 * 60 * 60 * 1000 }).catch(() => ({ items: [] }));
     const byCode = new Map((pool.items || []).map((item) => [String(item.code), item]));
     const previousByCode = new Map((previousPool.items || []).map((item) => [String(item.code), item]));
-    const countOf = (item) => {
-      const value = Number(item?.highDaysValue);
+    // THS highDays/highDaysValue is an aggregate rolling-window statistic.
+    // Eastmoney lbc is the authoritative consecutive-board count. The
+    // membership fallback is only used when the detailed source is down.
+    const [details, previousDetails] = await Promise.all([
+      fetchEastmoneyDetailedLimitUpPool(referenceDate).catch(() => []),
+      fetchEastmoneyDetailedLimitUpPool(previousTradeDate(referenceDate)).catch(() => [])
+    ]);
+    const detailByCode = new Map(details.map((item) => [String(item.code), item]));
+    const previousDetailByCode = new Map(previousDetails.map((item) => [String(item.code), item]));
+    const countOf = (item, detail) => {
+      const value = Number(detail?.boardCount);
       return Number.isFinite(value) && value > 0 ? value : item ? 1 : null;
     };
     return rows.map((row) => {
       const item = byCode.get(String(row.code));
-      const previousCount = countOf(previousByCode.get(String(row.code)));
+      const previousItem = previousByCode.get(String(row.code));
+      const previousCount = countOf(previousItem, previousDetailByCode.get(String(row.code)));
       if (!item) return { ...row, limitUp: false, boardCount: null, boardLabel: "", yesterdayBoardCount: previousCount };
-      const boardCount = Number.isFinite(Number(item.highDaysValue)) && Number(item.highDaysValue) > 0
-        ? Number(item.highDaysValue)
-        : previousCount ? previousCount + 1 : 1;
+      const detail = detailByCode.get(String(row.code));
+      const boardCount = countOf(item, detail) ?? (previousCount ? previousCount + 1 : 1);
       return {
         ...row,
         limitUp: true,
         boardCount,
+        boardCountSource: detail?.boardCount != null ? "eastmoney-lbc" : "pool-continuity-fallback",
         boardLabel: `${boardCount}连板`,
         yesterdayBoardCount: previousCount ?? Math.max(0, boardCount - 1),
         firstLimitTime: item.firstLimitTime || item.firstBoardTime || row.firstLimitTime || "",

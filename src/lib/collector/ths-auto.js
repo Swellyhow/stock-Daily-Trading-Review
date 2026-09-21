@@ -36,6 +36,23 @@ function cacheSet(key, value) {
   return value;
 }
 
+// Parse THS's rolling-window label without conflating it with a consecutive
+// board streak. For example, "8天5板" means five limit-ups in eight days.
+export function parseThsHighDays(value, encoded) {
+  const label = String(value ?? "").trim();
+  const daysAndBoards = label.match(/(\d+)天(\d+)板/);
+  if (daysAndBoards) return { days: Number(daysAndBoards[1]), totalBoards: Number(daysAndBoards[2]) };
+  if (label === "首板") return { days: 1, totalBoards: 1 };
+  const boards = label.match(/(\d+)板/);
+  if (boards) return { days: null, totalBoards: Number(boards[1]) };
+  const numeric = Number(encoded);
+  if (Number.isFinite(numeric) && numeric > 0) {
+    if (numeric > 0xffff) return { days: numeric & 0xffff, totalBoards: numeric >>> 16 };
+    return { days: null, totalBoards: numeric };
+  }
+  return { days: null, totalBoards: null };
+}
+
 // 同花顺分时接口返回的成交量/成交额是截至该分钟的累计值。
 // 图表与量价分析需要分钟增量，且用元数据避免重复差分。
 export function normalizeIntradayItems(items) {
@@ -109,37 +126,37 @@ export async function fetchThsLimitUpPool(options = {}) {
   const remaining = pageCount > 1 ? await mapConcurrent(Array.from({ length: pageCount - 1 }, (_, index) => index + 2), 4, requestPage) : [];
   if (remaining.some(page => Number(page?.status_code) !== 0 || !Array.isArray(page?.data?.info) || String(page.data.date || "").replace(/-/g, "") !== actualDate)) throw new Error("同花顺涨停池分页缺失或日期不一致");
   const rawItems = [body, ...remaining].flatMap((page) => Number(page?.status_code) === 0 && Array.isArray(page?.data?.info) ? page.data.info : []);
-  const boardCount = (value, encoded) => {
-    const label = String(value ?? "").trim();
-    const daysAndBoards = label.match(/\d+天(\d+)板/);
-    if (daysAndBoards) return Number(daysAndBoards[1]);
-    if (label === "首板") return 1;
-    const boards = label.match(/(\d+)板/);
-    if (boards) return Number(boards[1]);
-    const numeric = Number(encoded);
-    return Number.isFinite(numeric) && numeric > 0 && numeric < 100 ? numeric : null;
-  };
   const items = rawItems
-    .map((item) => ({
-      code: String(item.code ?? "").trim(),
-      name: String(item.name ?? "").trim(),
-      marketId: item.market_id ?? null,
-      marketType: String(item.market_type ?? "").trim(),
-      changeTag: String(item.change_tag ?? "").trim(),
-      // reason_type is the actual THS limit-up catalyst, e.g. "数字人民币+金融科技".
-      // change_tag only describes a board event (such as a re-seal) and is
-      // deliberately kept separate rather than presented as a reason.
-      limitReason: String(item.reason_type ?? item.limit_reason ?? item.reason ?? item.change_reason ?? item.limit_up_reason ?? "").trim(),
-      reasonType: String(item.reason_type ?? "").trim(),
-      firstLimitTime: item.first_limit_up_time ?? null,
-      lastLimitTime: item.last_limit_up_time ?? null,
-      limitUpType: String(item.limit_up_type ?? "").trim(),
-      isNew: Boolean(item.is_new),
-      isAgainLimit: Boolean(item.is_again_limit),
-      highDays: String(item.high_days ?? "").trim(),
-      highDaysValue: boardCount(item.high_days, item.high_days_value),
-      source: "同花顺涨停池"
-    }))
+    .map((item) => {
+      const parsed = parseThsHighDays(item.high_days, item.high_days_value);
+      return {
+        code: String(item.code ?? "").trim(),
+        name: String(item.name ?? "").trim(),
+        marketId: item.market_id ?? null,
+        marketType: String(item.market_type ?? "").trim(),
+        changeTag: String(item.change_tag ?? "").trim(),
+        // reason_type is the actual THS limit-up catalyst, e.g. "数字人民币+金融科技".
+        // change_tag only describes a board event (such as a re-seal) and is
+        // deliberately kept separate rather than presented as a reason.
+        limitReason: String(item.reason_type ?? item.limit_reason ?? item.reason ?? item.change_reason ?? item.limit_up_reason ?? "").trim(),
+        reasonType: String(item.reason_type ?? "").trim(),
+        firstLimitTime: item.first_limit_up_time ?? null,
+        lastLimitTime: item.last_limit_up_time ?? null,
+        limitUpType: String(item.limit_up_type ?? "").trim(),
+        isNew: Boolean(item.is_new),
+        isAgainLimit: Boolean(item.is_again_limit),
+        highDays: String(item.high_days ?? "").trim(),
+        // These are aggregate N-day/M-board activity fields. They must never be
+        // used as boardCount, which means the current consecutive streak.
+        highDaysDays: parsed.days,
+        highDaysTotal: parsed.totalBoards,
+        // Kept for compatibility with existing consumers. This is explicitly
+        // a rolling-window total, not the current consecutive board count.
+        highDaysValue: parsed.totalBoards,
+        periodBoardCount: parsed.totalBoards,
+        source: "同花顺涨停池"
+      };
+    })
     .filter((item) => /^\d{6}$/.test(item.code))
     .slice(0, requestedLimit);
   return cacheSet(cacheKey, {
