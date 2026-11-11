@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: node ${{ matrix.node }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: ['20', '22', '24']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # better-sqlite3 若无匹配的预编译二进制，需要本地编译工具链
+      - name: Fallback prebuilt binary (better-sqlite3)
+        if: failure()
+        shell: bash
+        run: |
+          cd node_modules/better-sqlite3
+          npx --yes prebuild-install -r node || true
+
+      - name: Syntax check
+        run: npm run check
+
+      # stockdb-sector-source 需要本地 stockdb 数据集（STOCKDB_ROOT），在 CI 上跳过
+      - name: Unit tests
+        shell: bash
+        run: |
+          files=$(ls test/*.test.js | grep -v 'stockdb-sector-source.test.js')
+          node --test --test-reporter=spec $files
+
+      - name: Smoke test - CLI decision
+        shell: bash
+        run: node src/index.js --mode analyze --format text
+
+      - name: Smoke test - web server boot
+        shell: bash
+        run: |
+          node web/search-server.js &
+          sleep 6
+          curl -sf -o /dev/null http://127.0.0.1:3000/
+          curl -sf -o /dev/null http://127.0.0.1:3000/api/history/sync-status

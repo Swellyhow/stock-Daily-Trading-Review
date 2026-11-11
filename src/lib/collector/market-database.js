@@ -1,4 +1,5 @@
 import Database from 'better-sqlite3';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,6 +8,8 @@ const dbPath = path.resolve(__dirname, '../../data/market.db');
 
 class MarketDatabase {
   constructor() {
+    // 本地库目录 src/data/ 不入库，首次运行或 CI 环境需要自动创建
+    fs.mkdirSync(path.dirname(dbPath), { recursive: true });
     this.db = new Database(dbPath);
     this.db.pragma('journal_mode = WAL');
     this.initTables();

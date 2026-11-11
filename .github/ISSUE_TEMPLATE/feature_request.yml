@@ -1,0 +1,61 @@
+name: Feature request
+description: 提出新能力、规则扩展或体验改进
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        提需求前请先看 [ROADMAP](https://github.com/Swellyhow/stock-Daily-Trading-Review/blob/master/ROADMAP.md)，
+        避免与已在计划中的条目重复。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 要解决的问题
+      description: 现在缺什么？在什么场景下会卡住？
+      placeholder: 例：盘后复盘时无法按"题材 × 买点"看历史胜率，只能手工翻台账。
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的方案
+      description: 你希望系统怎么做？给出输入、输出与命令/界面的样子。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: layer
+    attributes:
+      label: 建议改动所在的层
+      options:
+        - collector（采集）
+        - normalize（归一化）
+        - rules / governance（规则与闸门）
+        - workflow（工作流）
+        - llm（解释层）
+        - history / rule-optimizer（归档统计）
+        - web（界面与 API）
+        - docs / tooling（文档与工程）
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 已考虑过的替代方案
+      description: 为什么不用现有能力凑合？
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: 边界确认
+      options:
+        - label: 该需求不涉及自动下单/实盘交易接口
+          required: true
+        - label: 该需求不需要把第三方行情数据整包提交进仓库
+          required: true

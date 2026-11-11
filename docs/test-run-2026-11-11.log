@@ -1,0 +1,97 @@
+﻿✔ 分时保留09:30并过滤集合竞价、午休和收盘后数据 (2.9219ms)
+✔ 分时均价使用stockdb原始成交额/成交量，不把成交量当手数或用收盘价推导 (0.5764ms)
+✔ 板块明确average:null时即使有成分股成交额也不伪造均价线 (0.5626ms)
+✔ 取消图表请求会使请求令牌失效并清空旧图 (0.9434ms)
+✔ 实际个股加载入口中，切换股票会中止旧请求并忽略晚到图表响应 (1.0355ms)
+✔ 实际加载入口发送当前周期和日期，并显示板块来源元数据 (0.6871ms)
+✔ 零成交分钟沿用上一有效累计VWAP (0.5706ms)
+✔ picker matching ignores stockdb display whitespace in names (0.4881ms)
+✔ exact board and stock codes resolve before a picker catalog is available (1.9617ms)
+✔ free-text entries remain manual and do not trigger an exact-code lookup (0.8769ms)
+✔ tag mutations roll back their tag, board, and selected-filter state when persistence fails (0.6362ms)
+✔ latest request aborts superseded work and ignores a late response even when fetch ignores abort (3.8379ms)
+✔ identical in-flight requests share one fetch and cancelAll suppresses completion (1.6414ms)
+✔ stale request invocation cannot cancel the currently selected request (1.673ms)
+✔ sorting keeps absent values last in both directions and preserves zero (1.3601ms)
+✔ K-line tooltip uses explicit previous close and never turns missing values into zero (1.681ms)
+✔ 连板天梯排序后会按当前显示顺序重编号概念和个股列表 (1.0714ms)
+✔ 竞价工作台排序后会按当前显示顺序重编号概念和个股列表 (0.6383ms)
+✔ 市场管理两张表启用空值末尾排序器，序号列仍由当前显示行计算 (0.709ms)
+✔ 连板天梯概念表排序后实际渲染序号从1开始 (2.7333ms)
+✔ 竞价工作台概念表排序后实际渲染序号从1开始 (2.8304ms)
+✔ market-management.html: actual chart loader keeps the latest stock and sends selected date (2.958ms)
+✔ market-management.html: date-mismatched minute data is rejected and kind is explicit (2.017ms)
+✔ limit-up-ladder.html: actual chart loader keeps the latest stock and sends selected date (1.9918ms)
+✔ limit-up-ladder.html: date-mismatched minute data is rejected and kind is explicit (2.0573ms)
+✔ auction-monitor.html: actual chart loader keeps the latest stock and sends selected date (1.9117ms)
+✔ auction-monitor.html: date-mismatched minute data is rejected and kind is explicit (1.961ms)
+✔ stock list enrichment uses THS membership and only siliconflow review details (1.024ms)
+✔ stock list enrichment preserves quote rows when optional sources fail (0.1586ms)
+✔ auction route uses latest stockdb trading date when date is omitted (0.5245ms)
+✔ auction route preserves an explicitly requested trading date (9.7774ms)
+✔ auction route rejects an empty stockdb trading calendar (0.3236ms)
+✔ market route uses latest stockdb trading date when date is omitted (0.1101ms)
+✔ market route preserves an explicitly requested trading date (0.1843ms)
+✔ market route rejects an empty stockdb trading calendar (0.0751ms)
+✔ 无日期时使用 stockdb 最新交易日 (0.5079ms)
+✔ 显式日期保持用户选择，不被最新交易日覆盖 (10.2555ms)
+✔ stockdb 无交易日时明确失败 (0.3411ms)
+✔ .TI board reads reject colliding stock codes and invalid returned identities (14.4384ms)
+✖ daily snapshots preserve native .TI identity for board list statistics (0.6511ms)
+✖ 板块 K 线优先使用 stockdb 已提供的 .TI 原生行情 (0.6181ms)
+✖ 市场管理板块接口把原生 .TI K线标记为 native (311.1107ms)
+✔ THS N-day/M-board labels stay aggregate metadata, never current boardCount (1.4963ms)
+✔ encoded THS high_days_value is retained as aggregate total, not boardCount (0.1928ms)
+✔ postmarket merge uses Eastmoney lbc instead of THS rolling total (0.1139ms)
+✔ partial review retries retain prior detailed reasons and replace refreshed rows (0.8004ms)
+✔ review merge rejects missing reasons and codes outside the official pool (0.1198ms)
+ℹ tests 47
+ℹ suites 0
+ℹ pass 44
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 537.3096
+
+✖ failing tests:
+
+test at test\stockdb-sector-source.test.js:22:1
+✖ daily snapshots preserve native .TI identity for board list statistics (0.6511ms)
+  Error: stockdb 概念板块.json 不存在，请设置 STOCKDB_ROOT
+      at loadStockDbConceptCatalog (file:///D:/work/stock-Daily-Trading-Review/src/lib/collector/stockdb-client.js:150:52)
+      at fetchStockDbConceptBoards (file:///D:/work/stock-Daily-Trading-Review/src/lib/collector/stockdb-client.js:404:19)
+      at TestContext.<anonymous> (file:///D:/work/stock-Daily-Trading-Review/test/stockdb-sector-source.test.js:34:24)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at test\stockdb-sector-source.test.js:41:1
+✖ 板块 K 线优先使用 stockdb 已提供的 .TI 原生行情 (0.6181ms)
+  Error: stockdb 概念板块.json 不存在，请设置 STOCKDB_ROOT
+      at loadStockDbConceptCatalog (file:///D:/work/stock-Daily-Trading-Review/src/lib/collector/stockdb-client.js:150:52)
+      at conceptBoard (file:///D:/work/stock-Daily-Trading-Review/src/lib/collector/stockdb-client.js:459:10)
+      at fetchStockDbSectorKline (file:///D:/work/stock-Daily-Trading-Review/src/lib/collector/stockdb-client.js:566:17)
+      at TestContext.<anonymous> (file:///D:/work/stock-Daily-Trading-Review/test/stockdb-sector-source.test.js:59:22)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+
+test at test\stockdb-sector-source.test.js:81:1
+✖ 市场管理板块接口把原生 .TI K线标记为 native (311.1107ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'stockdb'
+  - 'stockdb .TI 原生板块行情'
+            ^
+  
+      at TestContext.<anonymous> (file:///D:/work/stock-Daily-Trading-Review/test/stockdb-sector-source.test.js:114:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1332:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:911:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'stockdb',
+    expected: 'stockdb .TI 原生板块行情',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

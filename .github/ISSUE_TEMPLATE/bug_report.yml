@@ -1,0 +1,73 @@
+name: Bug report
+description: 报告一个可复现的问题（规则输出异常、接口失败、界面错误等）
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请尽量提供可复现的最小输入，**不要粘贴真实 API Key、账户信息或个人交易流水**。
+        涉及行情抓取的问题，请附上接口返回的 `warnings` / `isFallback` 字段。
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 影响范围
+      options:
+        - 规则内核（环境/情绪/题材/龙头/仓位/卖点）
+        - 采集层（东财 / 同花顺 / 财联社 / 妙想 / stockdb）
+        - 工作流（盘前 / 盘中 / 盘后 / 台账）
+        - LLM 解释层
+        - Web 界面与 API
+        - 文档与安装
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+      description: 你认为系统应该输出什么？
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+      description: 贴出实际输出（`--format text` 的片段即可），或界面截图。
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: 复现步骤
+      description: 具体命令与输入文件。示例输入可放在 `data/examples/` 下的新文件里。
+      placeholder: |
+        1. node src/index.js --mode analyze --format text --input <file>
+        2. 观察输出中的 Environment / Allowed Setups 字段
+        3. ...
+      render: bash
+    validations:
+      required: true
+
+  - type: input
+    id: env
+    attributes:
+      label: 环境
+      description: 操作系统 / Node 版本 / 是否配置了 stockdb 与 SiliconFlow
+      placeholder: "Windows 11 / Node 24.18 / stockdb 未配置 / 无 LLM Key"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 相关日志
+      description: 错误堆栈或 `npm test` 输出（已脱敏）。
+      render: text
+    validations:
+      required: false

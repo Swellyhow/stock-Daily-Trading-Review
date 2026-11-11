@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 使用与安装文档
+    url: https://github.com/Swellyhow/stock-Daily-Trading-Review#快速开始
+    about: 先看 README 的安装步骤与功能边界，能解决大部分环境问题。
+  - name: 测试与已知失败项
+    url: https://github.com/Swellyhow/stock-Daily-Trading-Review/blob/master/docs/TESTING.md
+    about: 3 个 stockdb 数据集依赖用例的失败属已知环境缺失，不是回归。

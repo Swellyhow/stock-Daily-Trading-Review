@@ -1,7 +1,9 @@
-﻿node_modules/
+node_modules/
 outputs/
-.codex/skills/.env
+inputs/*
+!inputs/daily/latest.md
 .env
+.codex/skills/.env
 data/runtime/
 
 # Local runtime state and generated files
@@ -9,6 +11,9 @@ data/runtime/
 *.db-wal
 *.db-shm
 *.log
+*.out
+*.err
 *.pid
+src/data/
 __pycache__/
 .pytest_cache/

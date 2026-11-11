@@ -1,9 +1,28 @@
 {
   "name": "a-share-sentiment-decision-system",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
+  "description": "Node.js decision-support system for A-share short-term sentiment trading: regime, emotion cycle, theme/leader detection, position gates and daily review, with an optional LLM explanation layer.",
+  "keywords": [
+    "a-share",
+    "stock-analysis",
+    "trading-journal",
+    "market-sentiment",
+    "llm",
+    "financial-research",
+    "nodejs"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Swellyhow/stock-Daily-Trading-Review.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "type": "module",
   "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
     "analyze": "node src/index.js --input data/examples/sample_snapshot.json",
     "analyze:raw": "node src/index.js --mode analyze-raw --input data/examples/raw_market_notes.json",
     "normalize": "node src/index.js --mode normalize --input data/examples/raw_market_notes.json",
