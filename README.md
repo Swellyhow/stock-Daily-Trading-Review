@@ -3,6 +3,7 @@
 **English:** A local-first Node.js decision-support system for A-share short-term sentiment trading — it turns public market data and your own daily notes into a structured regime → emotion-cycle → theme/leader → position-gate → buy/sell-point decision, then archives the result for review. LLM layer only explains decisions; rule gates always win.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE)
+[![CI](https://github.com/Swellyhow/stock-Daily-Trading-Review/actions/workflows/ci.yml/badge.svg)](https://github.com/Swellyhow/stock-Daily-Trading-Review/actions/workflows/ci.yml)
 [![Node](https://img.shields.io/badge/Node.js-%E2%89%A520-339933.svg)](https://nodejs.org/)
 [![Runtime](https://img.shields.io/badge/runtime-local--first-1f6feb.svg)](#系统架构)
 [![PRs](https://img.shields.io/badge/PRs-welcome-8957e5.svg)](.github/PULL_REQUEST_TEMPLATE.md)
@@ -400,9 +401,13 @@ stock-Daily-Trading-Review/
 近期提交：
 
 ```text
+5ea9afa  2026-11-11  fix(db): wait on busy_timeout instead of failing on parallel test access
+394bc6f  2026-11-11  chore(opensource): add MIT license, project docs, CI and sensitive-data cleanup
 1ef9439  2026-09-21  Fix consecutive limit-up board counts
 3346173  2026-09-11  Initial public snapshot
 ```
+
+CI 状态：Node 20/22/24 × Ubuntu/Windows 六个 job 全绿（`run 43004841929`）。
 
 ## 敏感数据与合规
 

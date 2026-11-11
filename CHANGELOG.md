@@ -33,6 +33,10 @@
 - 移除仓库内 2026-04-05 ~ 2026-04-13 的 `outputs/daily/*`、`outputs/history/*/live/*` 行情快照（约 28 MB，属第三方行情数据，不适合随代码分发）。
 - 取消跟踪 `outputs/`、`inputs/` 下的运行产物；仓库仅保留 2026-03-27/28/31 与 `undated` 的脱敏演示产物。
 
+### Verified
+- 本地：`node --test` 47 用例 / 44 通过 / 3 个因本地 `stockdb` 数据集缺失（已知），连续 3 轮稳定。
+- CI：Node 20/22/24 × Ubuntu/Windows 六个 job 全绿（`run 43004841929`），含 CLI 决策冒烟与 Web 服务启动冒烟。
+
 ## [0.1.1] - 2026-09-21
 
 ### Fixed

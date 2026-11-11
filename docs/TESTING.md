@@ -153,6 +153,8 @@ chrome --headless=new --disable-gpu --hide-scrollbars --no-first-run \
 
 **修复**：`market-database.js` 连接初始化增加 `busy_timeout = 5000`（等待锁而非立即失败），并在构造时 `mkdir -p src/data`。本地连续 3 轮 `node --test` 稳定为 44 pass / 3 fail（3 个为 stockdb 数据集缺失）。
 
+**修复后复跑** `run 43004841929`（commit `5ea9afa`）：**6 个 job 全部通过**（Node 20/22/24 × Ubuntu/Windows），每个 job 41 用例全绿（排除了需要本地 stockdb 的 `stockdb-sector-source.test.js`），并通过 CLI 决策冒烟与 Web 服务启动冒烟。
+
 **这条例子的价值**：它证明 CI 矩阵不是摆设——一个只在 Windows 并行时序下出现的锁竞争，被第一次跑就抓到了。
 
 ## 7. 未覆盖 / 待补测试
