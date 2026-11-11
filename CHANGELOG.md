@@ -23,6 +23,10 @@
 - `package.json`：补充 `description` / `keywords` / `license` / `repository` / `engines` 字段，版本提升至 `0.2.0`。
 - `.gitignore`：新增 `inputs/`、`*.out`、`*.err`、`src/data/`，与 README 中"归档与运行产物不入库"的说明保持一致。
 
+### Fixed
+- `src/lib/collector/market-database.js`：首次运行时自动创建 `src/data/` 目录（此前需要手工 `mkdir`，否则 CI/新机器上会报 `Cannot open database because the directory does not exist`）。
+- `src/lib/collector/market-database.js`：连接增加 `busy_timeout = 5000`。CI 的 `node 24 / windows-latest` 首次运行暴露出：`node --test` 并行子进程同时打开同一个 `src/data/market.db` 时会抛 `SqliteError: database is locked`；改为等待锁而非立即失败。
+
 ### Removed
 - 取消跟踪运行日志 `web-server.out`、`web-server.err`、`web_server.out`、`web_server.err`（含本机运行路径与接口调用痕迹）。
 - 取消跟踪 `.claude/settings.local.json`（含本机进程 PID 与临时授权项）。

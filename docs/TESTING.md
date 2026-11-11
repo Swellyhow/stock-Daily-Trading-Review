@@ -134,7 +134,28 @@ chrome --headless=new --disable-gpu --hide-scrollbars --no-first-run \
   http://127.0.0.1:3000/market-management.html
 ```
 
-## 6. 未覆盖 / 待补测试
+## 6. CI 实测（GitHub Actions）
+
+工作流：`.github/workflows/ci.yml`（Node 20/22/24 × Ubuntu/Windows 共 6 个 job）。
+
+首次运行 `run 43004422174`（commit `394bc6f`）结果：
+
+| job | 结果 | 说明 |
+| --- | --- | --- |
+| node 20 / ubuntu | ✅ | |
+| node 22 / ubuntu | ✅ | |
+| node 24 / ubuntu | ✅ | |
+| node 20 / windows | ✅ | |
+| node 22 / windows | ✅ | |
+| node 24 / windows | ❌ | `test/stockdb-date-resolution.test.js`：`SqliteError: database is locked`（41 用例 / 40 通过 / 1 失败） |
+
+**问题定位**：`node --test` 以独立子进程并行跑测试文件，多个文件在 import 阶段各自实例化 `MarketDatabase` 并打开同一个 `src/data/market.db`；WAL 模式下跨进程写锁竞争在 Windows 上直接抛错（Linux 时序不同，未触发）。
+
+**修复**：`market-database.js` 连接初始化增加 `busy_timeout = 5000`（等待锁而非立即失败），并在构造时 `mkdir -p src/data`。本地连续 3 轮 `node --test` 稳定为 44 pass / 3 fail（3 个为 stockdb 数据集缺失）。
+
+**这条例子的价值**：它证明 CI 矩阵不是摆设——一个只在 Windows 并行时序下出现的锁竞争，被第一次跑就抓到了。
+
+## 7. 未覆盖 / 待补测试
 
 - `governance/decision-guardrails.js`、`trading-risk.js`、`execution-discipline.js`：无单元测试（最高优先级补测项）。
 - `llm/news-catalyst-analyzer.js`：仅覆盖降级分支，未覆盖主/备模型切换。

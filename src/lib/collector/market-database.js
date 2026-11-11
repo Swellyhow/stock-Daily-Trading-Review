@@ -12,6 +12,8 @@ class MarketDatabase {
     fs.mkdirSync(path.dirname(dbPath), { recursive: true });
     this.db = new Database(dbPath);
     this.db.pragma('journal_mode = WAL');
+    // 测试与 Web 服务可能同时打开同一个库文件，等待锁而不是直接报 "database is locked"
+    this.db.pragma('busy_timeout = 5000');
     this.initTables();
   }
 
